@@ -40,8 +40,12 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${inter.variable} ${archivo.variable} h-full antialiased scroll-smooth`}
+      suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col bg-white text-ink dark:bg-primary-dark dark:text-paper">
+      <body 
+        className="min-h-full flex flex-col bg-white text-ink dark:bg-primary-dark dark:text-paper"
+        suppressHydrationWarning
+      >
         {children}
       </body>
     </html>

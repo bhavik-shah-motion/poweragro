@@ -16,6 +16,48 @@ export default function Home() {
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [formError, setFormError] = useState("");
 
+  // Cross reference tool state
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResult, setSearchResult] = useState<{
+    code?: string;
+    type: string;
+    d?: number;
+    D?: number;
+    B?: number;
+    brands: string[];
+    notFound?: boolean;
+  } | null>(null);
+
+  const bearingDb: Record<string, { type: string; d: number; D: number; B: number; brands: string[] }> = {
+    "6204": { type: "Deep Groove Ball Bearing", d: 20, D: 47, B: 14, brands: ["SKF", "FAG", "NSK", "NTN"] },
+    "6008": { type: "Deep Groove Ball Bearing", d: 40, D: 68, B: 15, brands: ["SKF", "FAG", "KOYO"] },
+    "22220": { type: "Spherical Roller Bearing", d: 100, D: 180, B: 46, brands: ["SKF", "FAG", "Timken"] },
+    "30204": { type: "Tapered Roller Bearing", d: 20, D: 47, B: 15.25, brands: ["Timken", "FAG", "NTN", "NACHI"] },
+    "51105": { type: "Thrust Ball Bearing", d: 25, D: 37, B: 9, brands: ["SKF", "FAG", "NSK"] },
+    "UC205": { type: "Pillow Block Insert Bearing", d: 25, D: 52, B: 34.1, brands: ["NTN", "KOYO"] }
+  };
+
+  const handleCrossReferenceSearch = (val: string) => {
+    setSearchQuery(val);
+    const normalized = val.toUpperCase().replace(/\s+/g, "");
+    if (!normalized) {
+      setSearchResult(null);
+      return;
+    }
+    
+    // Check match
+    const foundKey = Object.keys(bearingDb).find(k => k.includes(normalized) || normalized.includes(k));
+    if (foundKey) {
+      setSearchResult({ code: foundKey, ...bearingDb[foundKey] });
+    } else {
+      setSearchResult({
+        notFound: true,
+        type: "Custom Sourced Specification",
+        brands: ["FAG", "SKF", "Timken", "NSK", "NTN", "NACHI", "KOYO"]
+      });
+    }
+  };
+
   // Safe client-side math for the Hero Rotating Bearing balls (12 balls on a circle of radius 57)
   const bearingBalls = Array.from({ length: 12 }, (_, i) => {
     const angle = (i * 30 * Math.PI) / 180;
@@ -42,6 +84,7 @@ export default function Home() {
       group: "ball",
       description: "Highly versatile, low-friction, high-speed bearings. Perfect for electric motors, pumps, and gearboxes.",
       details: "Radial loads • High Speed • Low Noise",
+      specs: { bore: "10mm to 1200mm", speed: "Up to 32,000 RPM", precision: "P0, P6, P5 (ISO Class)" },
       icon: (
         <svg className="w-12 h-12 text-primary" viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="2.5">
           <circle cx="24" cy="24" r="18" />
@@ -59,6 +102,7 @@ export default function Home() {
       group: "roller",
       description: "Designed for massive radial and axial combined loads in heavy industrial applications, gearboxes, and wheel hubs.",
       details: "High Load capacity • Rigid Guidance • Pure Steel",
+      specs: { bore: "15mm to 1800mm", speed: "Up to 12,000 RPM", precision: "P6, P5, P4 (ISO Class)" },
       icon: (
         <svg className="w-12 h-12 text-primary" viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="2.5">
           <ellipse cx="24" cy="24" rx="18" ry="12" />
@@ -72,6 +116,7 @@ export default function Home() {
       group: "roller",
       description: "Self-aligning heavy-duty bearings that easily handle shaft misalignments, high vibration, and heavy shocks.",
       details: "Self-Aligning • Shock Resistant • Toughest environments",
+      specs: { bore: "20mm to 2200mm", speed: "Up to 8,000 RPM", precision: "P6, P5 (ISO Class)" },
       icon: (
         <svg className="w-12 h-12 text-primary" viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="2.5">
           <circle cx="24" cy="24" r="18" />
@@ -86,6 +131,7 @@ export default function Home() {
       group: "housed",
       description: "Sealed, dust-proof, contamination-resistant housed components tailored for tractors, disk harrows, and harvesters.",
       details: "Triple Lip Seals • Heavy Duty Housing • Dust Tight",
+      specs: { bore: "20mm to 120mm", speed: "Up to 4,500 RPM", precision: "Standard Grade" },
       icon: (
         <svg className="w-12 h-12 text-primary" viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="2.5">
           <rect x="9" y="16" width="30" height="16" rx="2" />
@@ -99,6 +145,7 @@ export default function Home() {
       group: "housed",
       description: "Cast iron and thermoplastic housings ready to mount on shafts. Ideal for conveyors and industrial machinery lines.",
       details: "Plummer Blocks • Flange Units • Greasable Valves",
+      specs: { bore: "12mm to 140mm", speed: "Up to 6,000 RPM", precision: "Cast Iron Grade" },
       icon: (
         <svg className="w-12 h-12 text-primary" viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="2.5">
           <rect x="8" y="20" width="32" height="8" rx="4" />
@@ -114,6 +161,7 @@ export default function Home() {
       group: "special",
       description: "Angular contact, high-precision, thrust bearings, and custom sizes sourced directly for specialty mechanical lines.",
       details: "Micron Accuracy • Thrust Forces • Custom Sourced",
+      specs: { bore: "5mm to 600mm", speed: "Up to 48,000 RPM", precision: "P4, P2 (High Precision)" },
       icon: (
         <svg className="w-12 h-12 text-primary" viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="2.5">
           <circle cx="24" cy="24" r="18" />
@@ -125,14 +173,93 @@ export default function Home() {
   ];
 
   const industries = [
-    { name: "Agriculture", desc: "Harvesters, tillers, disk harrows, and pump drives.", icon: "🌾" },
-    { name: "Steel & Metals", desc: "High-temperature rolling mills and heavy casting lines.", icon: "🏭" },
-    { name: "Cement & Mining", desc: "Jaw crushers, vibrating screens, and raw conveyor networks.", icon: "⛰️" },
-    { name: "Automotive", desc: "Wheel hubs, transmissions, drivetrains, and alternators.", icon: "🚗" },
-    { name: "Power & Energy", desc: "Steam turbines, wind generators, and thermal pump systems.", icon: "⚡" },
-    { name: "Textiles", desc: "High-speed spinning, carding, weaving, and loom rollers.", icon: "🧵" },
-    { name: "Material Handling", desc: "Heavy-duty cranes, hoists, stackers, and sorting conveyors.", icon: "📦" },
-    { name: "General Engineering", desc: "Electric motors, compressors, blower fans, and gearboxes.", icon: "⚙️" },
+    { 
+      name: "Agriculture", 
+      desc: "Harvesters, tillers, disk harrows, and pump drives.", 
+      icon: (
+        <svg className="w-8 h-8 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M2 22c1.25-6.75 6-12 13-14" />
+          <path d="M22 2c-6.75 1.25-12 6-14 13" />
+          <path d="M9 9c-3 1.5-6 1.5-7 5 3-1.5 6-1.5 7-5z" />
+          <path d="M15 15c1.5-3 1.5-6 5-7-1.5 3-1.5 6-5 7z" />
+          <path d="M12 22V12" />
+        </svg>
+      ) 
+    },
+    { 
+      name: "Steel & Metals", 
+      desc: "High-temperature rolling mills and heavy casting lines.", 
+      icon: (
+        <svg className="w-8 h-8 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M17 18.5V21a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V10a1 1 0 0 1 1-1h3.5L10 12.5V8a1 1 0 0 1 1-1h3.5L17 10.5V5a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1h-3a1 1 0 0 1-1-1v-2.5" />
+          <path d="M6 13h2M6 17h2M12 13h2M12 17h2" />
+        </svg>
+      ) 
+    },
+    { 
+      name: "Cement & Mining", 
+      desc: "Jaw crushers, vibrating screens, and raw conveyor networks.", 
+      icon: (
+        <svg className="w-8 h-8 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M14.5 2 22 9.5M2 22l12.5-12.5" />
+          <path d="M11 5 5 11" />
+          <path d="m14 8-6 6" />
+          <path d="m18 10-6-6" />
+        </svg>
+      ) 
+    },
+    { 
+      name: "Automotive", 
+      desc: "Wheel hubs, transmissions, drivetrains, and alternators.", 
+      icon: (
+        <svg className="w-8 h-8 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="10" />
+          <circle cx="12" cy="12" r="3" />
+          <path d="M12 2v7M12 15v7M2 12h7M15 12h7" />
+          <path d="m5.8 5.8 4.4 4.4M13.8 13.8l4.4 4.4M5.8 18.2l4.4-4.4M13.8 10.2l4.4-4.4" />
+        </svg>
+      ) 
+    },
+    { 
+      name: "Power & Energy", 
+      desc: "Steam turbines, wind generators, and thermal pump systems.", 
+      icon: (
+        <svg className="w-8 h-8 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z" />
+        </svg>
+      ) 
+    },
+    { 
+      name: "Textiles", 
+      desc: "High-speed spinning, carding, weaving, and loom rollers.", 
+      icon: (
+        <svg className="w-8 h-8 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="3" />
+          <path d="M12 2v4M12 18v4M4 9h4M16 15h4M5.5 5.5l2.8 2.8M15.7 15.7l2.8 2.8M5.5 18.5l2.8-2.8M15.7 8.3l2.8-2.8" />
+          <path d="M12 6a6 6 0 0 0-6 6v4M12 6a6 6 0 0 1 6 6v4" />
+        </svg>
+      ) 
+    },
+    { 
+      name: "Material Handling", 
+      desc: "Heavy-duty cranes, hoists, stackers, and sorting conveyors.", 
+      icon: (
+        <svg className="w-8 h-8 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
+          <path d="m3.3 7 8.7 5 8.7-5M12 22V12" />
+        </svg>
+      ) 
+    },
+    { 
+      name: "General Engineering", 
+      desc: "Electric motors, compressors, blower fans, and gearboxes.", 
+      icon: (
+        <svg className="w-8 h-8 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="3" />
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+        </svg>
+      ) 
+    },
   ];
 
   const steps = [
@@ -257,7 +384,7 @@ export default function Home() {
       </header>
 
       {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center bg-primary-dark text-white overflow-hidden py-12 md:py-24">
+      <section className="relative min-h-[90vh] flex items-center bg-primary-dark text-white overflow-hidden py-12 md:py-24 bg-[linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:40px_40px]">
         {/* Animated Bearing Watermark Background */}
         <div className="absolute right-[-10%] top-[10%] w-[650px] h-[650px] opacity-15 md:opacity-25 animate-spin-slow pointer-events-none select-none">
           <svg className="w-full h-full text-accent" viewBox="0 0 200 200" fill="none">
@@ -275,8 +402,12 @@ export default function Home() {
 
         <div className="mx-auto max-w-7xl px-6 w-full relative z-10 grid md:grid-cols-12 gap-12 items-center">
           <div className="md:col-span-7 flex flex-col items-start text-left animate-slide-up">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-accent/15 border border-accent/20 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-accent-soft">
-              ⚙️ Genuine Sourcing &middot; Export Excellence
+            <span className="inline-flex items-center gap-2 rounded-full bg-accent/15 border border-accent/20 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-accent-soft">
+              <svg className="w-3.5 h-3.5 text-accent-soft" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+                <path d="m9 12 2 2 4-4" />
+              </svg>
+              Genuine Sourcing &middot; Export Excellence
             </span>
 
             <h1 className="mt-6 text-4xl sm:text-5xl lg:text-6xl font-display font-extrabold tracking-tight leading-tight">
@@ -357,6 +488,141 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Dynamic Sourcing Cross-Reference Widget */}
+      <section className="bg-white py-16 border-b border-slate-200">
+        <div className="mx-auto max-w-4xl px-6">
+          <div className="text-center max-w-2xl mx-auto mb-10">
+            <span className="font-display text-xs font-extrabold text-primary uppercase tracking-[0.2em]">
+              Cross-Reference Tool
+            </span>
+            <h2 className="mt-3 text-3xl font-display font-extrabold text-slate-900 tracking-tight">
+              Sourcing Sizing &amp; Brand Matching
+            </h2>
+            <p className="mt-2 text-sm text-slate-500">
+              Input a standard bearing model number to cross-reference dimensions and matching manufacturer brands.
+            </p>
+          </div>
+
+          <div className="bg-primary-dark rounded-[32px] p-8 md:p-10 text-white relative overflow-hidden shadow-2xl border border-emerald-800/80 bg-[linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:30px_30px]">
+            {/* Background glowing circle */}
+            <div className="absolute right-0 top-0 w-64 h-64 bg-accent/5 blur-[80px] rounded-full pointer-events-none" />
+
+            <div className="relative z-10 max-w-2xl mx-auto">
+              <label className="block text-xs font-bold text-accent-soft uppercase tracking-wider mb-3 text-center md:text-left">
+                Enter Bearing Designation or Prefix
+              </label>
+              
+              <div className="flex flex-col sm:flex-row gap-3">
+                <div className="relative flex-grow">
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => handleCrossReferenceSearch(e.target.value)}
+                    placeholder="Search: e.g. 6204, 22220, UC205..."
+                    className="w-full bg-emerald-950/60 border border-emerald-800/80 hover:border-emerald-600 rounded-xl px-5 py-4 text-white text-base focus:outline-none focus:border-accent placeholder-emerald-100/30 transition-all font-mono"
+                  />
+                  {searchQuery && (
+                    <button 
+                      onClick={() => handleCrossReferenceSearch("")}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-emerald-200/50 hover:text-white"
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Suggestions */}
+              <div className="mt-4 flex flex-wrap items-center gap-2 justify-center md:justify-start">
+                <span className="text-xs text-emerald-100/50">Common Examples:</span>
+                {["6204", "22220", "30204", "UC205"].map((ex) => (
+                  <button
+                    key={ex}
+                    onClick={() => handleCrossReferenceSearch(ex)}
+                    className="px-2.5 py-1 bg-emerald-900/40 hover:bg-accent hover:text-primary-dark border border-emerald-800/60 rounded-md text-[11px] font-mono text-emerald-100 font-medium transition-all cursor-pointer"
+                  >
+                    {ex}
+                  </button>
+                ))}
+              </div>
+
+              {/* Match Display Result */}
+              {searchResult && (
+                <div className="mt-8 p-6 bg-emerald-950/80 border border-accent/20 rounded-2xl animate-fade-in font-mono text-xs sm:text-sm space-y-4">
+                  {searchResult.notFound ? (
+                    <div>
+                      <div className="flex items-center gap-2 text-accent">
+                        <span>⚠️</span>
+                        <span className="font-extrabold uppercase">Custom Sizing Match</span>
+                      </div>
+                      <p className="mt-2 text-emerald-100/70 text-xs font-sans leading-relaxed">
+                        We did not find an exact match in our quick-search index. However, our Mumbai trade desk specializes in matching and importing any standard or special custom designations directly from Germany or Japan.
+                      </p>
+                      <div className="mt-4 pt-3 border-t border-emerald-900 flex items-center justify-between font-sans">
+                        <span className="text-slate-400 text-xs">Query: &quot;{searchQuery}&quot;</span>
+                        <a href="#contact" className="text-accent font-extrabold hover:underline">Request Sourcing Quote &rarr;</a>
+                      </div>
+                    </div>
+                  ) : (
+                    <div>
+                      <div className="flex items-center justify-between border-b border-emerald-900 pb-3">
+                        <div className="flex items-center gap-2">
+                          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                          <span className="text-accent font-extrabold">MATCH FOUND: SKU {searchResult.code}</span>
+                        </div>
+                        <span className="text-[10px] bg-accent/20 text-accent-soft px-2 py-0.5 rounded font-sans font-bold">READY TO SUPPLY</span>
+                      </div>
+                      
+                      <div className="mt-4 grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <div>
+                            <span className="block text-[10px] text-emerald-100/40 uppercase font-sans">Category type</span>
+                            <span className="text-emerald-100 font-semibold">{searchResult.type}</span>
+                          </div>
+                          <div>
+                            <span className="block text-[10px] text-emerald-100/40 uppercase font-sans">Suggested Brands</span>
+                            <span className="text-emerald-100 font-semibold">{searchResult.brands.join(", ")}</span>
+                          </div>
+                        </div>
+                        
+                        <div className="space-y-2 border-l border-emerald-900 pl-4">
+                          <div>
+                            <span className="block text-[10px] text-emerald-100/40 uppercase font-sans">Inside Bore (d)</span>
+                            <span className="text-emerald-100 font-semibold">{searchResult.d} mm</span>
+                          </div>
+                          <div>
+                            <span className="block text-[10px] text-emerald-100/40 uppercase font-sans">Outer Dia (D)</span>
+                            <span className="text-emerald-100 font-semibold">{searchResult.D} mm</span>
+                          </div>
+                          <div>
+                            <span className="block text-[10px] text-emerald-100/40 uppercase font-sans">Width thickness (B)</span>
+                            <span className="text-emerald-100 font-semibold">{searchResult.B} mm</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="mt-4 pt-3 border-t border-emerald-900 flex items-center justify-between font-sans">
+                        <span className="text-slate-400 text-xs">Available for Import/Export dispatch</span>
+                        <a 
+                          href="#contact" 
+                          onClick={() => {
+                            setMessage(`Inquiry regarding Sourced Match: ${searchResult.code} (${searchResult.type})\nDimensions: ${searchResult.d}x${searchResult.D}x${searchResult.B}mm\nQuantity: `);
+                            setEnquiryType("Product enquiry / quote");
+                          }}
+                          className="text-accent font-extrabold hover:underline"
+                        >
+                          Request Sourcing Quote &rarr;
+                        </a>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Brands Logo Ticker */}
       <section className="bg-slate-100 py-10 border-y border-slate-200">
         <div className="mx-auto max-w-7xl px-6">
@@ -370,10 +636,37 @@ export default function Home() {
                 key={i} 
                 className="group relative bg-white border border-slate-200/80 rounded-xl px-5 py-4 text-center cursor-help shadow-sm hover:shadow-md hover:border-emerald-600/30 transition-all duration-300 hover:-translate-y-0.5"
               >
-                <span className="block font-display font-extrabold text-sm text-slate-800 tracking-wide group-hover:text-primary transition-colors">
-                  {brand.name}
-                </span>
-                <span className="block text-[10px] text-slate-400 mt-1 uppercase tracking-wider font-semibold">
+                <div className="h-10 flex items-center justify-center">
+                  {brand.name === "SKF" && (
+                    <span className="font-sans font-black text-xl tracking-wider text-[#005A9C] dark:text-[#3a9ee6]">SKF</span>
+                  )}
+                  {brand.name === "Timken" && (
+                    <span className="font-serif font-black text-[11px] tracking-[0.2em] text-white bg-[#FF6600] px-2 py-0.5 rounded-sm shadow-sm uppercase">TIMKEN</span>
+                  )}
+                  {brand.name === "FAG · INA" && (
+                    <div className="flex items-center gap-1">
+                      <span className="font-sans font-black text-base text-[#E30613] tracking-tighter">FAG</span>
+                      <span className="text-slate-300 text-[10px]">|</span>
+                      <span className="font-sans font-bold text-xs text-[#00875A]">INA</span>
+                    </div>
+                  )}
+                  {brand.name === "NSK" && (
+                    <span className="font-sans font-black text-lg text-[#E60012] italic tracking-tighter">NSK</span>
+                  )}
+                  {brand.name === "NTN" && (
+                    <span className="font-sans font-extrabold text-[13px] text-white bg-[#002F6C] px-2 py-0.5 rounded tracking-wide">NTN</span>
+                  )}
+                  {brand.name === "KOYO" && (
+                    <span className="font-sans font-bold text-base text-[#0A2540] uppercase tracking-wide">Koyo</span>
+                  )}
+                  {brand.name === "NACHI" && (
+                    <span className="font-sans font-black text-[12px] text-white bg-[#E60000] px-1 rounded-sm">NACHI</span>
+                  )}
+                  {brand.name === "Schaeffler" && (
+                    <span className="font-sans font-extrabold text-[10px] text-[#008F6B] uppercase tracking-wider">SCHAEFFLER</span>
+                  )}
+                </div>
+                <span className="block text-[9px] text-slate-400 mt-2 uppercase tracking-widest font-bold">
                   {brand.origin}
                 </span>
 
@@ -449,6 +742,21 @@ export default function Home() {
                 <p className="mt-3 text-slate-600 text-sm leading-relaxed">
                   {service.description}
                 </p>
+                {/* Technical Specifications Table */}
+                <div className="mt-6 bg-slate-50/80 rounded-xl p-4 border border-slate-100/50 text-[11px] space-y-1.5 font-sans">
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">Bore Range:</span>
+                    <span className="font-semibold text-slate-700">{service.specs.bore}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">Limiting Speed:</span>
+                    <span className="font-semibold text-slate-700">{service.specs.speed}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">Precision Standard:</span>
+                    <span className="font-semibold text-slate-700">{service.specs.precision}</span>
+                  </div>
+                </div>
               </div>
 
               <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs">
@@ -492,7 +800,7 @@ export default function Home() {
                 key={i} 
                 className="bg-emerald-950/40 border border-emerald-900/60 hover:border-accent/40 rounded-2xl p-6 transition-all duration-300 group hover:-translate-y-1"
               >
-                <div className="text-3xl mb-4 group-hover:scale-125 transition-transform duration-300 w-fit">{ind.icon}</div>
+                <div className="mb-4 group-hover:scale-110 transition-transform duration-300 w-fit">{ind.icon}</div>
                 <h3 className="text-lg font-display font-extrabold text-white group-hover:text-accent transition-colors">
                   {ind.name}
                 </h3>
