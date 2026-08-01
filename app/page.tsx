@@ -1,175 +1,897 @@
+"use client";
+
+import { useState } from "react";
+
 export default function Home() {
+  const currentYear = 2026;
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeCategoryFilter, setActiveCategoryFilter] = useState("all");
+  
+  // Form States
+  const [name, setName] = useState("");
+  const [company, setCompany] = useState("");
+  const [email, setEmail] = useState("");
+  const [enquiryType, setEnquiryType] = useState("Product enquiry / quote");
+  const [message, setMessage] = useState("");
+  const [formSubmitted, setFormSubmitted] = useState(false);
+  const [formError, setFormError] = useState("");
+
+  // Safe client-side math for the Hero Rotating Bearing balls (12 balls on a circle of radius 57)
+  const bearingBalls = Array.from({ length: 12 }, (_, i) => {
+    const angle = (i * 30 * Math.PI) / 180;
+    const x = 100 + 57 * Math.cos(angle);
+    const y = 100 + 57 * Math.sin(angle);
+    return { x: x.toFixed(1), y: y.toFixed(1) };
+  });
+
+  const brands = [
+    { name: "FAG · INA", origin: "Germany", desc: "Premium Schaeffler automotive & industrial roller bearings." },
+    { name: "SKF", origin: "Sweden", desc: "Global leader in high-performance rotating equipment solutions." },
+    { name: "Timken", origin: "USA", desc: "Tapered roller bearings for heavy-duty industrial gearing." },
+    { name: "NSK", origin: "Japan", desc: "Super-precision ball bearings and linear motion components." },
+    { name: "NTN", origin: "Japan", desc: "Standard and custom bearings for automotive & manufacturing." },
+    { name: "KOYO", origin: "Japan", desc: "Heavy agricultural & automotive steering machinery bearings." },
+    { name: "NACHI", origin: "Japan", desc: "Extremely durable bearings for robotics and machine tools." },
+    { name: "Schaeffler", origin: "Germany", desc: "Engineered solutions, high-grade bearings for aerospace & rail." },
+  ];
+
   const services = [
     {
-      title: "Modern Farming",
-      description:
-        "Empowering farmers with innovative techniques, sustainable practices, and precision agriculture.",
-      icon: "🌱",
+      id: "01",
+      title: "Deep Groove Ball Bearings",
+      group: "ball",
+      description: "Highly versatile, low-friction, high-speed bearings. Perfect for electric motors, pumps, and gearboxes.",
+      details: "Radial loads • High Speed • Low Noise",
+      icon: (
+        <svg className="w-12 h-12 text-primary" viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <circle cx="24" cy="24" r="18" />
+          <circle cx="24" cy="24" r="7" />
+          <circle cx="24" cy="8" r="2.5" fill="currentColor" />
+          <circle cx="24" cy="40" r="2.5" fill="currentColor" />
+          <circle cx="8" cy="24" r="2.5" fill="currentColor" />
+          <circle cx="40" cy="24" r="2.5" fill="currentColor" />
+        </svg>
+      )
     },
     {
-      title: "Agri Solutions",
-      description:
-        "Complete agricultural consulting, irrigation planning, crop nutrition, and farm optimization.",
-      icon: "🚜",
+      id: "02",
+      title: "Tapered & Cylindrical Roller",
+      group: "roller",
+      description: "Designed for massive radial and axial combined loads in heavy industrial applications, gearboxes, and wheel hubs.",
+      details: "High Load capacity • Rigid Guidance • Pure Steel",
+      icon: (
+        <svg className="w-12 h-12 text-primary" viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <ellipse cx="24" cy="24" rx="18" ry="12" />
+          <path d="M14 16v16M24 13v22M34 16v16" strokeLinecap="round" />
+        </svg>
+      )
     },
     {
-      title: "Organic Growth",
-      description:
-        "Helping communities produce healthier crops with eco-friendly and sustainable farming methods.",
-      icon: "🌾",
+      id: "03",
+      title: "Spherical Roller Bearings",
+      group: "roller",
+      description: "Self-aligning heavy-duty bearings that easily handle shaft misalignments, high vibration, and heavy shocks.",
+      details: "Self-Aligning • Shock Resistant • Toughest environments",
+      icon: (
+        <svg className="w-12 h-12 text-primary" viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <circle cx="24" cy="24" r="18" />
+          <path d="M24 6a18 18 0 0 1 0 36" />
+          <path d="M12 24h24" />
+        </svg>
+      )
     },
+    {
+      id: "04",
+      title: "Agricultural & Farm Bearings",
+      group: "housed",
+      description: "Sealed, dust-proof, contamination-resistant housed components tailored for tractors, disk harrows, and harvesters.",
+      details: "Triple Lip Seals • Heavy Duty Housing • Dust Tight",
+      icon: (
+        <svg className="w-12 h-12 text-primary" viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <rect x="9" y="16" width="30" height="16" rx="2" />
+          <path d="M16 16v16M24 16v16M32 16v16" />
+        </svg>
+      )
+    },
+    {
+      id: "05",
+      title: "Pillow Blocks & Housed Units",
+      group: "housed",
+      description: "Cast iron and thermoplastic housings ready to mount on shafts. Ideal for conveyors and industrial machinery lines.",
+      details: "Plummer Blocks • Flange Units • Greasable Valves",
+      icon: (
+        <svg className="w-12 h-12 text-primary" viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <rect x="8" y="20" width="32" height="8" rx="4" />
+          <circle cx="16" cy="24" r="2" fill="currentColor" />
+          <circle cx="24" cy="24" r="2" fill="currentColor" />
+          <circle cx="32" cy="24" r="2" fill="currentColor" />
+        </svg>
+      )
+    },
+    {
+      id: "06",
+      title: "Special & Precision Bearings",
+      group: "special",
+      description: "Angular contact, high-precision, thrust bearings, and custom sizes sourced directly for specialty mechanical lines.",
+      details: "Micron Accuracy • Thrust Forces • Custom Sourced",
+      icon: (
+        <svg className="w-12 h-12 text-primary" viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <circle cx="24" cy="24" r="18" />
+          <path d="M24 24l10-10M24 24l-8 8" />
+          <circle cx="24" cy="24" r="3" fill="currentColor" />
+        </svg>
+      )
+    }
   ];
 
-  const stats = [
-    { value: "500+", label: "Farmers Served" },
-    { value: "120+", label: "Projects Completed" },
-    { value: "15+", label: "Years Experience" },
-    { value: "98%", label: "Client Satisfaction" },
+  const industries = [
+    { name: "Agriculture", desc: "Harvesters, tillers, disk harrows, and pump drives.", icon: "🌾" },
+    { name: "Steel & Metals", desc: "High-temperature rolling mills and heavy casting lines.", icon: "🏭" },
+    { name: "Cement & Mining", desc: "Jaw crushers, vibrating screens, and raw conveyor networks.", icon: "⛰️" },
+    { name: "Automotive", desc: "Wheel hubs, transmissions, drivetrains, and alternators.", icon: "🚗" },
+    { name: "Power & Energy", desc: "Steam turbines, wind generators, and thermal pump systems.", icon: "⚡" },
+    { name: "Textiles", desc: "High-speed spinning, carding, weaving, and loom rollers.", icon: "🧵" },
+    { name: "Material Handling", desc: "Heavy-duty cranes, hoists, stackers, and sorting conveyors.", icon: "📦" },
+    { name: "General Engineering", desc: "Electric motors, compressors, blower fans, and gearboxes.", icon: "⚙️" },
   ];
+
+  const steps = [
+    {
+      num: "01",
+      title: "Enquiry & Selection",
+      desc: "Provide your exact bearing SKU/designation, dimension metrics, or target machinery application. Our engineering desk helps verify dimensions."
+    },
+    {
+      num: "02",
+      title: "Authorized Sourcing",
+      desc: "We source genuine, traceable bearings from established OEM factories and direct channels in Europe, USA, and Japan at wholesale pricing."
+    },
+    {
+      num: "03",
+      title: "Trade & Compliance",
+      desc: "Full export invoice, packing list, certificate of origin, and custom clearance documents are compiled and verified by our Mumbai logistics team."
+    },
+    {
+      num: "04",
+      title: "Consignment Delivery",
+      desc: "Securely packed, anti-moisture wrapped, and shipped globally. Consignments are tracked door-to-door, guaranteeing authentic components."
+    }
+  ];
+
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name || !email || !message) {
+      setFormError("Please fill out the required fields (Name, Email, and Message).");
+      return;
+    }
+    
+    // Simulate simple successful submission with API feedback delay
+    setFormError("");
+    setFormSubmitted(true);
+  };
+
+  const filteredServices = activeCategoryFilter === "all" 
+    ? services 
+    : services.filter(s => s.group === activeCategoryFilter);
 
   return (
-    <main className="min-h-screen overflow-hidden bg-gradient-to-br from-green-50 via-white to-emerald-100">
-      {/* Background */}
-      <div className="absolute left-0 top-0 h-[500px] w-[500px] rounded-full bg-green-300/20 blur-3xl" />
-      <div className="absolute bottom-0 right-0 h-[500px] w-[500px] rounded-full bg-emerald-400/20 blur-3xl" />
+    <main className="min-h-screen font-sans bg-slate-50 text-slate-900 overflow-x-hidden selection:bg-accent selection:text-primary-dark">
+      {/* Background Decor */}
+      <div className="absolute left-0 top-0 h-[600px] w-[600px] rounded-full bg-emerald-700/5 blur-[120px] pointer-events-none" />
+      <div className="absolute top-[800px] right-0 h-[500px] w-[500px] rounded-full bg-accent/5 blur-[120px] pointer-events-none" />
 
-      {/* Navbar */}
-      <nav className="mx-auto flex max-w-7xl items-center justify-between px-8 py-6">
-        <h1 className="text-3xl font-black text-green-700">
-          Power<span className="text-black">Agro</span>
-        </h1>
-
-        <div className="hidden gap-8 font-medium text-gray-700 md:flex">
-          <a href="#about" className="hover:text-green-700">
-            About
+      {/* Sticky Header / Navbar */}
+      <header className="sticky top-0 z-50 glass-panel border-b border-slate-200/80 transition-all duration-300">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+          <a href="#top" className="flex items-center gap-2 group">
+            <svg className="w-8 h-8 transition-transform group-hover:rotate-180 duration-1000" viewBox="0 0 100 100" fill="none">
+              <circle cx="50" cy="50" r="44" stroke="#0B6E4F" strokeWidth="8" />
+              <circle cx="50" cy="50" r="20" stroke="#E0A317" strokeWidth="8" />
+              <g fill="#0B6E4F">
+                <circle cx="50" cy="14" r="5" />
+                <circle cx="50" cy="86" r="5" />
+                <circle cx="14" cy="50" r="5" />
+                <circle cx="86" cy="50" r="5" />
+              </g>
+            </svg>
+            <span className="font-display font-extrabold text-xl tracking-tight text-primary-dark dark:text-emerald-500">
+              POWER<span className="text-accent font-semibold ml-0.5">AGRO</span>
+            </span>
           </a>
-          <a href="#services" className="hover:text-green-700">
-            Services
-          </a>
-          <a href="#contact" className="hover:text-green-700">
-            Contact
-          </a>
-        </div>
 
-        <button className="rounded-full bg-green-700 px-6 py-3 font-semibold text-white transition hover:bg-green-800">
-          Get Started
-        </button>
-      </nav>
+          {/* Desktop Nav Links */}
+          <nav className="hidden md:flex items-center gap-8 font-medium text-slate-600">
+            <a href="#products" className="hover:text-primary transition-colors duration-200">Products</a>
+            <a href="#industries" className="hover:text-primary transition-colors duration-200">Industries</a>
+            <a href="#trade" className="hover:text-primary transition-colors duration-200">Sourcing Flow</a>
+            <a href="#about" className="hover:text-primary transition-colors duration-200">About</a>
+            <a href="#contact" className="hover:text-primary transition-colors duration-200">Contact</a>
+          </nav>
 
-      {/* Hero */}
-      <section className="mx-auto flex max-w-7xl flex-col items-center px-8 py-24 text-center">
-        <div className="rounded-full bg-green-100 px-5 py-2 font-medium text-green-700">
-          🌿 Sustainable Agriculture • Better Future
-        </div>
-
-        <h1 className="mt-8 max-w-5xl text-5xl font-black leading-tight text-gray-900 md:text-7xl">
-          Growing Tomorrow with
-          <span className="block bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent">
-            Smart Agriculture
-          </span>
-        </h1>
-
-        <p className="mt-8 max-w-3xl text-lg leading-8 text-gray-600">
-          Power Agro delivers innovative farming solutions, sustainable crop
-          management, and agricultural technologies that help farmers maximize
-          productivity while protecting nature.
-        </p>
-
-        <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-          <button className="rounded-full bg-green-700 px-8 py-4 font-semibold text-white transition hover:scale-105 hover:bg-green-800">
-            Explore Services
-          </button>
-
-          <button className="rounded-full border border-green-700 px-8 py-4 font-semibold text-green-700 transition hover:bg-green-50">
-            Learn More
-          </button>
-        </div>
-      </section>
-
-      {/* Stats */}
-      <section className="mx-auto grid max-w-7xl grid-cols-2 gap-6 px-8 pb-24 md:grid-cols-4">
-        {stats.map((stat) => (
-          <div
-            key={stat.label}
-            className="rounded-3xl border border-white/60 bg-white/70 p-8 shadow-xl backdrop-blur"
-          >
-            <h2 className="text-4xl font-bold text-green-700">{stat.value}</h2>
-            <p className="mt-2 text-gray-600">{stat.label}</p>
+          <div className="hidden md:block">
+            <a 
+              href="#contact" 
+              className="inline-flex items-center justify-center rounded-full bg-primary hover:bg-primary-deep text-white px-5 py-2.5 font-display font-bold text-sm tracking-wide shadow-md hover:shadow-lg transition-all hover:-translate-y-0.5 duration-200"
+            >
+              Request a Quote
+            </a>
           </div>
-        ))}
+
+          {/* Mobile Menu Button */}
+          <button 
+            className="md:hidden p-2 text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle menu"
+          >
+            {mobileMenuOpen ? (
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            ) : (
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            )}
+          </button>
+        </div>
+
+        {/* Mobile Dropdown Panel */}
+        {mobileMenuOpen && (
+          <div className="md:hidden border-t border-slate-200 bg-white/95 backdrop-blur-md animate-fade-in">
+            <div className="flex flex-col gap-4 px-6 py-6 font-medium text-slate-700">
+              <a href="#products" onClick={() => setMobileMenuOpen(false)} className="hover:text-primary py-1">Products</a>
+              <a href="#industries" onClick={() => setMobileMenuOpen(false)} className="hover:text-primary py-1">Industries</a>
+              <a href="#trade" onClick={() => setMobileMenuOpen(false)} className="hover:text-primary py-1">Sourcing Flow</a>
+              <a href="#about" onClick={() => setMobileMenuOpen(false)} className="hover:text-primary py-1">About Us</a>
+              <a href="#contact" onClick={() => setMobileMenuOpen(false)} className="hover:text-primary py-1">Contact Details</a>
+              <a 
+                href="#contact" 
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-full text-center rounded-lg bg-primary hover:bg-primary-deep text-white py-3 mt-2 font-display font-bold shadow"
+              >
+                Request a Quote
+              </a>
+            </div>
+          </div>
+        )}
+      </header>
+
+      {/* Hero Section */}
+      <section className="relative min-h-[90vh] flex items-center bg-primary-dark text-white overflow-hidden py-12 md:py-24">
+        {/* Animated Bearing Watermark Background */}
+        <div className="absolute right-[-10%] top-[10%] w-[650px] h-[650px] opacity-15 md:opacity-25 animate-spin-slow pointer-events-none select-none">
+          <svg className="w-full h-full text-accent" viewBox="0 0 200 200" fill="none">
+            <circle cx="100" cy="100" r="92" stroke="currentColor" strokeWidth="2.5" />
+            <circle cx="100" cy="100" r="74" stroke="currentColor" strokeWidth="8" strokeDasharray="3 3" />
+            <circle cx="100" cy="100" r="40" stroke="currentColor" strokeWidth="6" />
+            <circle cx="100" cy="100" r="20" fill="currentColor" opacity="0.3" />
+            <g fill="currentColor">
+              {bearingBalls.map((b, i) => (
+                <circle key={i} cx={b.x} cy={b.y} r="6.5" />
+              ))}
+            </g>
+          </svg>
+        </div>
+
+        <div className="mx-auto max-w-7xl px-6 w-full relative z-10 grid md:grid-cols-12 gap-12 items-center">
+          <div className="md:col-span-7 flex flex-col items-start text-left animate-slide-up">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-accent/15 border border-accent/20 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-accent-soft">
+              ⚙️ Genuine Sourcing &middot; Export Excellence
+            </span>
+
+            <h1 className="mt-6 text-4xl sm:text-5xl lg:text-6xl font-display font-extrabold tracking-tight leading-tight">
+              Bearings that move the{" "}
+              <span className="block bg-gradient-to-r from-accent via-emerald-400 to-accent bg-clip-text text-transparent">
+                World&apos;s Machinery
+              </span>
+            </h1>
+
+            <p className="mt-6 text-base sm:text-lg text-emerald-100/80 leading-relaxed max-w-xl">
+              Power Agro connects global machinery manufacturers and industries with 100% genuine agricultural & industrial bearings. Sourced straight from certified brand channels, dispatched securely out of Mumbai, India.
+            </p>
+
+            <div className="mt-10 flex flex-wrap gap-4">
+              <a 
+                href="#products" 
+                className="rounded-full bg-accent hover:bg-accent-soft text-primary-dark font-display font-extrabold px-8 py-4 tracking-wide shadow-lg hover:shadow-accent/25 hover:-translate-y-0.5 transition-all duration-200"
+              >
+                Explore Sourced Range &rarr;
+              </a>
+              <a 
+                href="#contact" 
+                className="rounded-full border border-emerald-500/50 hover:border-white/80 bg-white/5 hover:bg-white/10 font-display font-bold text-white px-8 py-4 transition-all duration-200"
+              >
+                Talk to Trade Desk
+              </a>
+            </div>
+
+            {/* Metrics */}
+            <div className="mt-16 w-full pt-8 border-t border-emerald-800/60 grid grid-cols-3 gap-6">
+              <div>
+                <span className="block text-3xl font-extrabold font-display text-accent">45,000+</span>
+                <span className="text-xs uppercase tracking-wider text-emerald-200/60">SKUs Stocked</span>
+              </div>
+              <div>
+                <span className="block text-3xl font-extrabold font-display text-accent">8+</span>
+                <span className="text-xs uppercase tracking-wider text-emerald-200/60">Premium Brands</span>
+              </div>
+              <div>
+                <span className="block text-3xl font-extrabold font-display text-accent">1980</span>
+                <span className="text-xs uppercase tracking-wider text-emerald-200/60">Group Heritage</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Interactive Bearing Ring Visualization */}
+          <div className="md:col-span-5 hidden md:flex justify-center items-center relative animate-fade-in">
+            {/* Glowing Blur Ring Background */}
+            <div className="absolute w-[360px] h-[360px] rounded-full bg-emerald-500/10 blur-[80px] -z-10" />
+            <div className="absolute w-[200px] h-[200px] rounded-full bg-accent/5 blur-[50px] -z-10" />
+
+            <div className="w-[380px] h-[380px] relative hover:scale-105 transition-transform duration-500 cursor-pointer">
+              {/* Outer shell (static logo backdrop) */}
+              <div className="absolute inset-0 border-[3px] border-emerald-700/30 rounded-full" />
+              
+              {/* Actual Rotating Bearing SVG component */}
+              <svg className="w-full h-full text-accent drop-shadow-[0_0_25px_rgba(224,163,23,0.15)] animate-spin-slow hover:animate-[spin_20s_linear_infinite]" viewBox="0 0 200 200" fill="none">
+                <circle cx="100" cy="100" r="92" stroke="#E0A317" strokeWidth="4" />
+                <circle cx="100" cy="100" r="74" stroke="#ffffff" strokeWidth="11" opacity="0.8" />
+                <circle cx="100" cy="100" r="40" stroke="#ffffff" strokeWidth="11" opacity="0.8" />
+                <circle cx="100" cy="100" r="22" fill="#E0A317" opacity="0.9" />
+                
+                {/* Balls */}
+                <g fill="#E0A317">
+                  {bearingBalls.map((b, i) => (
+                    <circle key={i} cx={b.x} cy={b.y} r="7" className="transition-transform" />
+                  ))}
+                </g>
+              </svg>
+
+              {/* Inside Static text */}
+              <div className="absolute inset-0 flex flex-col justify-center items-center text-center select-none pointer-events-none">
+                <span className="text-white text-[9px] font-bold tracking-[0.25em] uppercase opacity-70">ORIGINAL</span>
+                <span className="text-accent text-[12px] font-extrabold tracking-wide uppercase">PARTS</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
-      {/* Services */}
-      <section id="services" className="mx-auto max-w-7xl px-8 py-20">
-        <div className="text-center">
-          <p className="font-semibold uppercase tracking-widest text-green-700">
-            What We Do
+      {/* Brands Logo Ticker */}
+      <section className="bg-slate-100 py-10 border-y border-slate-200">
+        <div className="mx-auto max-w-7xl px-6">
+          <p className="text-center text-xs font-display font-semibold uppercase tracking-[0.2em] text-slate-500 mb-8">
+            Trusted Premium Brands We Source & Supply
           </p>
 
-          <h2 className="mt-4 text-4xl font-bold text-gray-900">
-            Agriculture Built for the Future
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4">
+            {brands.map((brand, i) => (
+              <div 
+                key={i} 
+                className="group relative bg-white border border-slate-200/80 rounded-xl px-5 py-4 text-center cursor-help shadow-sm hover:shadow-md hover:border-emerald-600/30 transition-all duration-300 hover:-translate-y-0.5"
+              >
+                <span className="block font-display font-extrabold text-sm text-slate-800 tracking-wide group-hover:text-primary transition-colors">
+                  {brand.name}
+                </span>
+                <span className="block text-[10px] text-slate-400 mt-1 uppercase tracking-wider font-semibold">
+                  {brand.origin}
+                </span>
+
+                {/* Popover detailed text */}
+                <div className="absolute z-20 left-1/2 -translate-x-1/2 bottom-full mb-3 w-56 p-3 rounded-lg bg-primary-dark text-white text-xs text-left shadow-xl opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 pointer-events-none transition-all duration-200 origin-bottom">
+                  <div className="absolute left-1/2 -translate-x-1/2 top-full border-[6px] border-transparent border-t-primary-dark" />
+                  <p className="font-semibold text-accent mb-0.5">{brand.name}</p>
+                  <p className="text-emerald-100/80 leading-relaxed font-normal">{brand.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Interactive Products Range */}
+      <section id="products" className="py-24 mx-auto max-w-7xl px-6">
+        <div className="text-center max-w-3xl mx-auto">
+          <span className="font-display text-xs font-extrabold text-primary uppercase tracking-[0.2em]">
+            Catalog Range
+          </span>
+          <h2 className="mt-3 text-3xl sm:text-4xl font-display font-extrabold text-slate-900 tracking-tight">
+            Every Bearing Type Your Line Depends On
           </h2>
+          <p className="mt-4 text-base text-slate-600 leading-relaxed">
+            We source genuine, traceable bearings for heavy industrial systems and precise machinery. Filter and select a category below to explore its primary applications.
+          </p>
+
+          {/* Interactive filter tabs */}
+          <div className="mt-10 flex flex-wrap justify-center gap-2">
+            {[
+              { id: "all", name: "Show All Products" },
+              { id: "ball", name: "Ball Bearings" },
+              { id: "roller", name: "Roller Bearings" },
+              { id: "housed", name: "Agricultural & Housed" },
+              { id: "special", name: "Specialized" }
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveCategoryFilter(tab.id)}
+                className={`px-5 py-2.5 rounded-full font-display font-bold text-xs tracking-wide transition-all cursor-pointer ${
+                  activeCategoryFilter === tab.id
+                    ? "bg-primary text-white shadow-md shadow-primary/25"
+                    : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50"
+                }`}
+              >
+                {tab.name}
+              </button>
+            ))}
+          </div>
         </div>
 
-        <div className="mt-16 grid gap-8 md:grid-cols-3">
-          {services.map((service) => (
-            <div
-              key={service.title}
-              className="rounded-3xl border border-white/60 bg-white/70 p-8 shadow-xl backdrop-blur transition hover:-translate-y-3"
+        {/* Dynamic Products Grid */}
+        <div className="mt-16 grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {filteredServices.map((service) => (
+            <div 
+              key={service.id}
+              className="bg-white border border-slate-200/80 rounded-3xl p-8 hover:shadow-xl hover:border-emerald-600/20 hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between relative group"
             >
-              <div className="mb-6 text-5xl">{service.icon}</div>
+              <div className="absolute top-6 right-8 font-display font-extrabold text-slate-200 text-2xl tracking-tighter">
+                {service.id}
+              </div>
 
-              <h3 className="text-2xl font-bold">{service.title}</h3>
+              <div>
+                <div className="p-3 bg-emerald-50 rounded-2xl w-fit group-hover:scale-110 group-hover:bg-accent/10 transition-all duration-300">
+                  {service.icon}
+                </div>
 
-              <p className="mt-4 leading-7 text-gray-600">
-                {service.description}
-              </p>
+                <h3 className="mt-6 text-xl font-display font-extrabold text-slate-800 group-hover:text-primary transition-colors">
+                  {service.title}
+                </h3>
+
+                <p className="mt-3 text-slate-600 text-sm leading-relaxed">
+                  {service.description}
+                </p>
+              </div>
+
+              <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs">
+                <span className="font-semibold text-slate-400 font-mono">
+                  {service.details}
+                </span>
+                <a 
+                  href="#contact" 
+                  onClick={() => {
+                    setMessage(`Inquiry regarding: ${service.title}\nQuantity: `);
+                    setEnquiryType("Product enquiry / quote");
+                  }} 
+                  className="font-display font-bold text-primary group-hover:text-accent hover:underline flex items-center gap-1"
+                >
+                  Request quote &rarr;
+                </a>
+              </div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* About */}
-      <section
-        id="about"
-        className="mx-auto max-w-7xl px-8 py-20"
-      >
-        <div className="rounded-[40px] bg-gradient-to-r from-green-700 to-emerald-600 p-16 text-white">
-          <h2 className="text-4xl font-bold">
-            Cultivating Innovation, Harvesting Success
-          </h2>
+      {/* Industries Served */}
+      <section id="industries" className="bg-primary-dark text-white py-24">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="max-w-3xl">
+            <span className="font-display text-xs font-extrabold text-accent uppercase tracking-[0.2em]">
+              Sectors Supported
+            </span>
+            <h2 className="mt-3 text-3xl sm:text-4xl font-display font-extrabold tracking-tight">
+              Keeping Critical Sectors Turning
+            </h2>
+            <p className="mt-4 text-emerald-100/70 text-base leading-relaxed">
+              From continuous casting steel lines in central India to high-efficiency turbine gearboxes, our supplied parts minimize downtime across these essential industries.
+            </p>
+          </div>
 
-          <p className="mt-6 max-w-3xl text-lg leading-8 text-green-100">
-            We combine agricultural expertise with modern technology to improve
-            crop yield, conserve natural resources, and build a sustainable
-            future for farmers across the country.
-          </p>
-
-          <button className="mt-10 rounded-full bg-white px-8 py-4 font-semibold text-green-700 transition hover:scale-105">
-            Discover More
-          </button>
+          <div className="mt-16 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {industries.map((ind, i) => (
+              <div 
+                key={i} 
+                className="bg-emerald-950/40 border border-emerald-900/60 hover:border-accent/40 rounded-2xl p-6 transition-all duration-300 group hover:-translate-y-1"
+              >
+                <div className="text-3xl mb-4 group-hover:scale-125 transition-transform duration-300 w-fit">{ind.icon}</div>
+                <h3 className="text-lg font-display font-extrabold text-white group-hover:text-accent transition-colors">
+                  {ind.name}
+                </h3>
+                <p className="mt-2 text-xs text-emerald-100/65 leading-relaxed">
+                  {ind.desc}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section id="contact" className="px-8 py-24 text-center">
-        <h2 className="text-4xl font-bold text-gray-900">
-          Let's Grow Together 🌱
-        </h2>
+      {/* About Split Section */}
+      <section id="about" className="py-24 mx-auto max-w-7xl px-6">
+        <div className="grid lg:grid-cols-12 gap-16 items-center">
+          <div className="lg:col-span-7">
+            <span className="font-display text-xs font-extrabold text-primary uppercase tracking-[0.2em]">
+              Heritage &amp; Sourcing
+            </span>
+            <h2 className="mt-3 text-3xl sm:text-4xl font-display font-extrabold text-slate-900 tracking-tight leading-tight">
+              A Trade House Built on Genuine Parts and Dependable Delivery
+            </h2>
+            <p className="mt-6 text-slate-600 text-sm sm:text-base leading-relaxed">
+              Power Agro is a Mumbai-based import and export house dedicated strictly to industrial and agricultural bearings. We deal directly with manufacturers and verified official channel partners, ensuring every single box is traceable.
+            </p>
+            <p className="mt-4 text-slate-600 text-sm sm:text-base leading-relaxed">
+              Sharing a business heritage dating back to 1980, we pair deep product-code knowledge with rigorous custom clearance, anti-rust inspection, and compliant trade documentation to serve both domestic buyers and international firms.
+            </p>
 
-        <p className="mx-auto mt-6 max-w-2xl text-lg text-gray-600">
-          Whether you're an individual farmer, agribusiness, or agricultural
-          organization, Power Agro is here to help you achieve sustainable
-          growth.
-        </p>
+            {/* Fact Checkmarks */}
+            <div className="mt-8 grid sm:grid-cols-2 gap-4">
+              {[
+                { title: "Genuine Sourcing", desc: "100% trace credentials with brand audits." },
+                { title: "Global Reach", desc: "Expert customs handling & container freight." },
+                { title: "Technical Matching", desc: "Decades of engineering cross-reference databases." },
+                { title: "Trade Compliance", desc: "Transparent invoice structures & GST filings." }
+              ].map((fact, idx) => (
+                <div key={idx} className="flex gap-3 items-start">
+                  <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-emerald-50 text-primary flex items-center justify-center">
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h4 className="font-display font-bold text-sm text-slate-800">{fact.title}</h4>
+                    <p className="text-xs text-slate-500 mt-0.5">{fact.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
 
-        <button className="mt-10 rounded-full bg-green-700 px-10 py-4 font-semibold text-white transition hover:bg-green-800">
-          Contact Us
-        </button>
+          {/* Interactive Trade Globe Graphics */}
+          <div className="lg:col-span-5 flex justify-center items-center">
+            <div className="w-full max-w-[380px] bg-primary-dark rounded-[32px] overflow-hidden border border-emerald-800/80 shadow-2xl relative group">
+              {/* Globe Grid lines SVG */}
+              <svg className="w-full h-auto bg-emerald-950" viewBox="0 0 400 320" fill="none">
+                <rect width="400" height="320" fill="#06392A" />
+                <g stroke="rgba(255,255,255,0.18)" strokeWidth="1">
+                  <ellipse cx="200" cy="160" rx="150" ry="150" />
+                  <ellipse cx="200" cy="160" rx="150" ry="55" />
+                  <ellipse cx="200" cy="160" rx="150" ry="105" />
+                  <ellipse cx="200" cy="160" rx="55" ry="150" />
+                  <ellipse cx="200" cy="160" rx="105" ry="150" />
+                  <line x1="50" y1="160" x2="350" y2="160" />
+                  <line x1="200" y1="10" x2="200" y2="310" />
+                </g>
+                
+                {/* Ports / Cities (Mumbai focal point) */}
+                <g fill="#E0A317" className="animate-pulse-slow">
+                  <circle cx="200" cy="160" r="6" />
+                  <circle cx="120" cy="110" r="4" />
+                  <circle cx="290" cy="130" r="4" />
+                  <circle cx="150" cy="230" r="4" />
+                  <circle cx="270" cy="215" r="4" />
+                  <circle cx="255" cy="80" r="4" />
+                </g>
+
+                {/* Sourcing/Delivery paths */}
+                <g stroke="#E0A317" strokeWidth="1.6" strokeDasharray="3 4" opacity="0.8" fill="none">
+                  <path d="M200 160 Q150 100 120 110" />
+                  <path d="M200 160 Q260 110 290 130" />
+                  <path d="M200 160 Q180 210 150 230" />
+                  <path d="M200 160 Q250 200 270 215" />
+                  <path d="M200 160 Q240 100 255 80" />
+                </g>
+              </svg>
+
+              <div className="p-6 bg-gradient-to-t from-primary-dark to-emerald-950 border-t border-emerald-800/80">
+                <span className="font-display font-extrabold text-xs text-accent uppercase tracking-wider">Mumbai Trade Desk</span>
+                <p className="text-emerald-100/70 text-xs mt-1.5 leading-relaxed">
+                  Conveniently located near Masjid Bunder Station and Mumbai Seaport (JNPT) channels for efficient freight operations.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
-      <footer className="border-t border-green-200 py-8 text-center text-gray-500">
-        © {new Date().getFullYear()} Power Agro. Growing a Sustainable Future.
+      {/* Sourcing Flow (How We Work) */}
+      <section id="trade" className="bg-slate-100 py-24 border-y border-slate-200">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="text-center max-w-2xl mx-auto">
+            <span className="font-display text-xs font-extrabold text-primary uppercase tracking-[0.2em]">
+              The Sourcing Flow
+            </span>
+            <h2 className="mt-3 text-3xl sm:text-4xl font-display font-extrabold text-slate-900 tracking-tight">
+              From Inquiry to Delivered Consignment
+            </h2>
+            <p className="mt-4 text-sm sm:text-base text-slate-600 leading-relaxed">
+              We run a completely transparent and disciplined supply chain procedure ensuring you receive verified genuine parts.
+            </p>
+          </div>
+
+          <div className="mt-16 grid sm:grid-cols-2 lg:grid-cols-4 gap-8 relative">
+            {/* Connecting lines for desktop */}
+            <div className="hidden lg:block absolute top-1/3 left-6 right-6 h-[1.5px] bg-slate-300 -z-10" />
+
+            {steps.map((step, idx) => (
+              <div 
+                key={idx} 
+                className="bg-white border border-slate-200/80 rounded-2xl p-8 shadow-sm hover:shadow-md transition-all duration-300 relative"
+              >
+                <div className="w-12 h-12 rounded-full bg-accent/15 border border-accent/30 flex items-center justify-center font-display font-extrabold text-primary-dark text-lg mb-6">
+                  {step.num}
+                </div>
+                <h3 className="text-lg font-display font-extrabold text-slate-800 mb-3">{step.title}</h3>
+                <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">{step.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Interactive Contact & Inquiry Section */}
+      <section id="contact" className="py-24 mx-auto max-w-7xl px-6">
+        <div className="grid lg:grid-cols-12 gap-16 items-start">
+          {/* Enquiry Form */}
+          <div className="lg:col-span-7 bg-white border border-slate-200/80 rounded-[32px] p-8 sm:p-10 shadow-xl relative overflow-hidden">
+            <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-primary to-accent" />
+            
+            <h3 className="text-2xl font-display font-extrabold text-slate-900">
+              Submit Sourcing Request
+            </h3>
+            <p className="text-slate-500 text-sm mt-1">
+              Input part number designations, target brands, and quantities below.
+            </p>
+
+            {formSubmitted ? (
+              <div className="mt-8 p-8 bg-emerald-50 border border-emerald-100 rounded-2xl text-center flex flex-col items-center justify-center animate-fade-in">
+                <div className="w-16 h-16 bg-emerald-600 text-white rounded-full flex items-center justify-center shadow-lg mb-4">
+                  <svg className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <h4 className="text-lg font-display font-bold text-slate-900">Inquiry Transmitted Successfully</h4>
+                <p className="text-sm text-slate-600 mt-2 max-w-sm">
+                  Thank you! Our bearing trade desk will cross-reference your request and send pricing/lead times within 4 business hours to <strong>{email}</strong>.
+                </p>
+                <button
+                  onClick={() => {
+                    setFormSubmitted(false);
+                    setName("");
+                    setCompany("");
+                    setEmail("");
+                    setMessage("");
+                  }}
+                  className="mt-6 px-6 py-2 bg-primary hover:bg-primary-deep text-white font-display font-bold text-xs rounded-lg transition-colors cursor-pointer"
+                >
+                  Submit Another Sourcing Ticket
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleFormSubmit} className="mt-8 space-y-5">
+                {formError && (
+                  <div className="p-4 bg-rose-50 border border-rose-100 text-rose-700 text-xs font-semibold rounded-xl">
+                    ⚠️ {formError}
+                  </div>
+                )}
+
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Name *</label>
+                    <input 
+                      type="text" 
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="Your Full Name"
+                      className="w-full border border-slate-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-primary transition-colors" 
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Company Name</label>
+                    <input 
+                      type="text" 
+                      value={company}
+                      onChange={(e) => setCompany(e.target.value)}
+                      placeholder="Enterprise Name"
+                      className="w-full border border-slate-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-primary transition-colors" 
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Corporate Email Address *</label>
+                  <input 
+                    type="email" 
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="name@company.com"
+                    className="w-full border border-slate-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-primary transition-colors" 
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Enquiry Category</label>
+                  <select 
+                    value={enquiryType}
+                    onChange={(e) => setEnquiryType(e.target.value)}
+                    className="w-full border border-slate-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-primary bg-white transition-colors"
+                  >
+                    <option>Product enquiry / quote</option>
+                    <option>Bulk / export order</option>
+                    <option>Distributor partnership</option>
+                    <option>General question</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Bearing Designations &amp; Message *</label>
+                  <textarea 
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    rows={4}
+                    placeholder="Example: SKF 6204-2RSH (Qty: 250), FAG 22220-E1-K (Qty: 50)"
+                    className="w-full border border-slate-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-primary transition-colors"
+                    required
+                  ></textarea>
+                </div>
+
+                <button 
+                  type="submit"
+                  className="w-full py-4 rounded-xl bg-primary hover:bg-primary-deep text-white font-display font-extrabold text-sm tracking-wide shadow-lg hover:shadow-primary/20 transition-all duration-200 cursor-pointer"
+                >
+                  Transmit Sourcing Enquiry &rarr;
+                </button>
+              </form>
+            )}
+          </div>
+
+          {/* Contact Details Panel */}
+          <div className="lg:col-span-5 space-y-8">
+            <div>
+              <span className="font-display text-xs font-extrabold text-primary uppercase tracking-[0.2em]">
+                Direct Desk
+              </span>
+              <h3 className="mt-3 text-2xl font-display font-extrabold text-slate-900">
+                Mumbai Head Office
+              </h3>
+              <p className="text-slate-500 text-sm mt-1">
+                Reach us via phone, mail, or visit our trade office.
+              </p>
+            </div>
+
+            <div className="space-y-6">
+              {/* Address */}
+              <div className="flex gap-4">
+                <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-emerald-50 text-primary flex items-center justify-center border border-emerald-100">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                </div>
+                <div>
+                  <h4 className="font-display font-extrabold text-sm text-slate-800">Office Address</h4>
+                  <p className="text-slate-600 text-xs sm:text-sm mt-1 leading-relaxed">
+                    2nd Floor-1, 12/14 Hira Bhuvan, Dariyasthan Street,<br />
+                    Masjid Bunder Station, Mumbai 400003, India
+                  </p>
+                  <a 
+                    href="https://maps.google.com/?q=Dariyasthan+Street,+Masjid+Bunder,+Mumbai" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="text-xs font-bold text-primary hover:underline inline-flex items-center gap-0.5 mt-1.5"
+                  >
+                    Open in Google Maps &rarr;
+                  </a>
+                </div>
+              </div>
+
+              {/* Phone */}
+              <div className="flex gap-4">
+                <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-emerald-50 text-primary flex items-center justify-center border border-emerald-100">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1 1 0 01-.321.988l-1.305.98a10.582 10.582 0 004.872 4.872l.98-1.305a1 1 0 01.988-.321l2.2.548a1 1 0 01.725.94V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                  </svg>
+                </div>
+                <div>
+                  <h4 className="font-display font-extrabold text-sm text-slate-800">Phone / WhatsApp</h4>
+                  <p className="text-slate-600 text-xs sm:text-sm mt-1">
+                    <a href="tel:+919820717873" className="hover:text-primary transition-colors font-semibold">
+                      +91 98207 17873
+                    </a>
+                  </p>
+                  <span className="text-[10px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-semibold inline-block mt-1">
+                    🟢 Chat Support Available
+                  </span>
+                </div>
+              </div>
+
+              {/* Email */}
+              <div className="flex gap-4">
+                <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-emerald-50 text-primary flex items-center justify-center border border-emerald-100">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L22 8m-9.3 12.3c-.66.66-1.74.66-2.4 0L3 13.5c-.66-.66-.66-1.74 0-2.4L11.5 3c.66-.66 1.74-.66 2.4 0L21 11.1c.66.66.66 1.74 0 2.4L12.7 20.3z" />
+                  </svg>
+                </div>
+                <div>
+                  <h4 className="font-display font-extrabold text-sm text-slate-800">Corporate Email</h4>
+                  <p className="text-slate-600 text-xs sm:text-sm mt-1">
+                    <a href="mailto:info.poweragro@gmail.com" className="hover:text-primary transition-colors font-semibold">
+                      info.poweragro@gmail.com
+                    </a>
+                  </p>
+                </div>
+              </div>
+
+              {/* Business Details */}
+              <div className="flex gap-4">
+                <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-emerald-50 text-primary flex items-center justify-center border border-emerald-100">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                </div>
+                <div>
+                  <h4 className="font-display font-extrabold text-sm text-slate-800">GSTIN / Hours</h4>
+                  <p className="text-slate-600 text-xs sm:text-sm mt-1 font-semibold">
+                    GSTIN: 27AAZHA9435Q1Z5
+                  </p>
+                  <p className="text-slate-500 text-xs mt-0.5">
+                    Monday &ndash; Saturday: 10:00 &ndash; 18:30 IST
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-primary-dark text-slate-300 pt-16 pb-8 border-t border-emerald-900">
+        <div className="mx-auto max-w-7xl px-6 grid md:grid-cols-12 gap-10">
+          <div className="md:col-span-5 space-y-4">
+            <div className="flex items-center gap-2">
+              <svg className="w-6 h-6 text-accent" viewBox="0 0 100 100" fill="none">
+                <circle cx="50" cy="50" r="44" stroke="currentColor" strokeWidth="10" />
+                <circle cx="50" cy="50" r="20" stroke="#fff" strokeWidth="10" />
+              </svg>
+              <span className="font-display font-extrabold text-lg text-white">POWER AGRO</span>
+            </div>
+            <p className="text-emerald-100/60 text-xs sm:text-sm leading-relaxed max-w-sm">
+              Mumbai-based global import &amp; export house specializing in 100% genuine industrial and agricultural bearings from top-tier world manufacturers.
+            </p>
+          </div>
+
+          <div className="md:col-span-3 space-y-3">
+            <h4 className="font-display font-bold text-xs uppercase tracking-widest text-accent">Nav Links</h4>
+            <ul className="space-y-2 text-xs">
+              <li><a href="#products" className="hover:text-white transition-colors">Product Categories</a></li>
+              <li><a href="#industries" className="hover:text-white transition-colors">Industries Served</a></li>
+              <li><a href="#trade" className="hover:text-white transition-colors">Sourcing Procedure</a></li>
+              <li><a href="#about" className="hover:text-white transition-colors">About Sourcing Desk</a></li>
+            </ul>
+          </div>
+
+          <div className="md:col-span-4 space-y-3">
+            <h4 className="font-display font-bold text-xs uppercase tracking-widest text-accent">Supported Brands</h4>
+            <p className="text-xs text-emerald-100/60 leading-relaxed">
+              FAG &middot; INA &middot; Schaeffler &middot; SKF &middot; Timken &middot; NSK &middot; NTN &middot; KOYO &middot; NACHI
+            </p>
+            <div className="pt-2">
+              <span className="block text-[10px] text-emerald-200/50 uppercase font-semibold">Support Desk</span>
+              <a href="mailto:info.poweragro@gmail.com" className="text-xs font-bold text-white hover:underline">
+                info.poweragro@gmail.com
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div className="mx-auto max-w-7xl px-6 mt-12 pt-8 border-t border-emerald-900/60 text-center md:flex md:justify-between text-[11px] text-emerald-200/40 space-y-2 md:space-y-0">
+          <span>
+            &copy; {currentYear} Power Agro. All Rights Reserved. Sourced &amp; Sourced Reliably.
+          </span>
+          <span>
+            GSTIN: 27AAZHA9435Q1Z5 &middot; Masjid Bunder, Mumbai 400003, India
+          </span>
+        </div>
       </footer>
     </main>
   );
