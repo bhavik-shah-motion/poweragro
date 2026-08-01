@@ -1,0 +1,1 @@
+Refer the index.html file in the root directory

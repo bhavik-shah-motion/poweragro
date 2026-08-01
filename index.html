@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Power Agro — Global Trade in Agricultural &amp; Industrial Bearings</title>
+<meta name="description" content="Power Agro is a Mumbai-based import and export house specialising in agricultural and industrial bearings from the world's leading manufacturers." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --green:#0B6E4F;
+    --green-deep:#08553D;
+    --green-dark:#06392A;
+    --gold:#E0A317;
+    --gold-soft:#F3D488;
+    --ink:#12211C;
+    --steel:#5A6B64;
+    --line:#DDE4E0;
+    --paper:#F6F8F6;
+    --white:#FFFFFF;
+    --maxw:1180px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Inter',system-ui,sans-serif;
+    color:var(--ink);
+    background:var(--white);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{font-family:'Archivo',sans-serif;letter-spacing:-0.02em;line-height:1.05}
+  a{color:inherit;text-decoration:none}
+  img,svg{display:block;max-width:100%}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+  .eyebrow{
+    font-family:'Archivo',sans-serif;font-weight:700;font-size:.72rem;
+    letter-spacing:.18em;text-transform:uppercase;color:var(--gold);
+  }
+  .btn{
+    display:inline-flex;align-items:center;gap:.5rem;
+    font-family:'Archivo',sans-serif;font-weight:600;font-size:.95rem;
+    padding:.85rem 1.5rem;border-radius:2px;transition:.2s;cursor:pointer;border:none;
+  }
+  .btn-gold{background:var(--gold);color:var(--green-dark)}
+  .btn-gold:hover{background:var(--gold-soft)}
+  .btn-ghost{background:transparent;color:var(--white);border:1.5px solid rgba(255,255,255,.4)}
+  .btn-ghost:hover{border-color:var(--white);background:rgba(255,255,255,.08)}
+  .btn-dark{background:var(--green);color:var(--white)}
+  .btn-dark:hover{background:var(--green-deep)}
+
+  /* ---------- HEADER ---------- */
+  header{
+    position:sticky;top:0;z-index:50;background:rgba(255,255,255,.94);
+    backdrop-filter:blur(8px);border-bottom:1px solid var(--line);
+  }
+  .nav{display:flex;align-items:center;justify-content:space-between;height:72px}
+  .brand{display:flex;align-items:center;gap:.7rem;font-family:'Archivo',sans-serif;font-weight:800;font-size:1.25rem}
+  .brand .ring{width:30px;height:30px}
+  .brand span{color:var(--green)}
+  .brand em{font-style:normal;color:var(--gold)}
+  .navlinks{display:flex;gap:2rem;align-items:center}
+  .navlinks a{font-weight:500;font-size:.95rem;color:var(--steel);transition:.15s}
+  .navlinks a:hover{color:var(--green)}
+  .menu-btn{display:none;background:none;border:none;cursor:pointer}
+
+  /* ---------- HERO ---------- */
+  .hero{position:relative;background:var(--green-dark);color:var(--white);overflow:hidden}
+  .hero .wrap{position:relative;z-index:2;padding-top:96px;padding-bottom:110px;max-width:760px;margin-left:auto;margin-right:auto}
+  .hero .wrap{margin-left:0}
+  .hero-inner{max-width:640px}
+  .hero h1{font-size:clamp(2.4rem,5.5vw,4.1rem);font-weight:800;margin:1.2rem 0 1.3rem}
+  .hero h1 b{color:var(--gold);font-weight:800}
+  .hero p{font-size:1.12rem;color:rgba(255,255,255,.82);max-width:520px;margin-bottom:2.2rem}
+  .hero-cta{display:flex;gap:1rem;flex-wrap:wrap}
+  .bearing{
+    position:absolute;right:-140px;top:50%;transform:translateY(-50%);
+    width:620px;height:620px;z-index:1;opacity:.9;
+    animation:spin 60s linear infinite;
+  }
+  @keyframes spin{to{transform:translateY(-50%) rotate(360deg)}}
+  @media (prefers-reduced-motion:reduce){.bearing{animation:none}}
+
+  .metrics{display:flex;gap:2.5rem;flex-wrap:wrap;margin-top:3rem;padding-top:2rem;border-top:1px solid rgba(255,255,255,.15)}
+  .metric b{font-family:'Archivo',sans-serif;font-weight:800;font-size:1.9rem;color:var(--gold);display:block;line-height:1}
+  .metric span{font-size:.85rem;color:rgba(255,255,255,.7)}
+
+  /* ---------- SECTION ---------- */
+  section{padding:88px 0}
+  .sec-head{max-width:640px;margin-bottom:3rem}
+  .sec-head h2{font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:700;margin:.8rem 0 1rem}
+  .sec-head p{color:var(--steel);font-size:1.05rem}
+
+  /* ---------- PRODUCTS ---------- */
+  .prod-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+  .prod{background:var(--white);padding:2.2rem 1.8rem;transition:.2s;position:relative}
+  .prod:hover{background:var(--paper)}
+  .prod .ic{width:44px;height:44px;color:var(--green);margin-bottom:1.2rem}
+  .prod h3{font-size:1.15rem;font-weight:700;margin-bottom:.5rem}
+  .prod p{color:var(--steel);font-size:.94rem}
+  .prod .no{position:absolute;top:1.6rem;right:1.8rem;font-family:'Archivo',sans-serif;font-weight:700;color:var(--line);font-size:1.1rem}
+
+  /* ---------- BRANDS ---------- */
+  .brands{background:var(--paper);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .brand-row{display:flex;flex-wrap:wrap;gap:1rem;justify-content:center}
+  .chip{
+    font-family:'Archivo',sans-serif;font-weight:700;font-size:1rem;color:var(--green-deep);
+    background:var(--white);border:1px solid var(--line);padding:.7rem 1.4rem;border-radius:2px;
+    letter-spacing:.03em;
+  }
+
+  /* ---------- INDUSTRIES ---------- */
+  .ind-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.4rem}
+  .ind{border:1px solid var(--line);border-top:3px solid var(--gold);padding:1.8rem 1.4rem;transition:.2s}
+  .ind:hover{box-shadow:0 12px 30px rgba(11,110,79,.09);transform:translateY(-3px)}
+  .ind h3{font-size:1.05rem;font-weight:700;margin-bottom:.4rem}
+  .ind p{color:var(--steel);font-size:.9rem}
+
+  /* ---------- ABOUT / SPLIT ---------- */
+  .split{display:grid;grid-template-columns:1.05fr 1fr;gap:4rem;align-items:center}
+  .about{background:var(--green-dark);color:var(--white)}
+  .about .eyebrow{color:var(--gold)}
+  .about h2{color:var(--white)}
+  .about p{color:rgba(255,255,255,.82);margin-bottom:1.1rem}
+  .about-facts{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem;margin-top:2rem}
+  .fact{border-left:2px solid var(--gold);padding-left:1rem}
+  .fact b{display:block;font-family:'Archivo',sans-serif;font-weight:700;font-size:1.05rem}
+  .fact span{font-size:.85rem;color:rgba(255,255,255,.65)}
+  .globe{border-radius:4px;overflow:hidden;border:1px solid rgba(255,255,255,.15)}
+  .globe svg{width:100%;height:auto;background:var(--green-deep)}
+
+  /* ---------- FLOW / TRADE ---------- */
+  .flow{display:grid;grid-template-columns:repeat(4,1fr);gap:0}
+  .step{padding:1.8rem;border:1px solid var(--line);border-right:none;position:relative}
+  .step:last-child{border-right:1px solid var(--line)}
+  .step .num{font-family:'Archivo',sans-serif;font-weight:800;font-size:2.4rem;color:var(--gold-soft);line-height:1}
+  .step h3{font-size:1.05rem;font-weight:700;margin:.6rem 0 .4rem}
+  .step p{color:var(--steel);font-size:.9rem}
+
+  /* ---------- CONTACT ---------- */
+  .contact{background:var(--paper);border-top:1px solid var(--line)}
+  .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem}
+  .field{margin-bottom:1.1rem}
+  .field label{display:block;font-size:.82rem;font-weight:600;color:var(--steel);margin-bottom:.35rem}
+  .field input,.field textarea,.field select{
+    width:100%;padding:.8rem .9rem;border:1px solid var(--line);border-radius:2px;
+    font-family:inherit;font-size:.95rem;background:var(--white);
+  }
+  .field input:focus,.field textarea:focus,.field select:focus{outline:2px solid var(--green);border-color:var(--green)}
+  .cinfo .row{display:flex;gap:.9rem;padding:1.1rem 0;border-bottom:1px solid var(--line)}
+  .cinfo .row .ic{width:22px;height:22px;color:var(--green);flex-shrink:0;margin-top:2px}
+  .cinfo .row b{display:block;font-family:'Archivo',sans-serif;font-size:.95rem}
+  .cinfo .row span{color:var(--steel);font-size:.92rem}
+  .editable{color:var(--gold);font-weight:600}
+
+  /* ---------- FOOTER ---------- */
+  footer{background:var(--green-dark);color:rgba(255,255,255,.72);padding:56px 0 28px}
+  .foot-top{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:3rem;padding-bottom:2.5rem;border-bottom:1px solid rgba(255,255,255,.12)}
+  .foot-top h4{font-family:'Archivo',sans-serif;color:var(--white);font-size:.85rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:1rem}
+  .foot-top a{display:block;color:rgba(255,255,255,.72);font-size:.92rem;padding:.28rem 0;transition:.15s}
+  .foot-top a:hover{color:var(--gold)}
+  .foot-brand{display:flex;align-items:center;gap:.6rem;font-family:'Archivo',sans-serif;font-weight:800;font-size:1.3rem;color:var(--white);margin-bottom:.8rem}
+  .foot-bottom{padding-top:1.6rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem;font-size:.83rem}
+
+  @media(max-width:900px){
+    .navlinks{display:none}
+    .menu-btn{display:block}
+    .prod-grid{grid-template-columns:1fr 1fr}
+    .ind-grid{grid-template-columns:1fr 1fr}
+    .split{grid-template-columns:1fr;gap:2.5rem}
+    .flow{grid-template-columns:1fr 1fr}
+    .step{border-right:1px solid var(--line)}
+    .contact-grid{grid-template-columns:1fr;gap:2.5rem}
+    .foot-top{grid-template-columns:1fr 1fr}
+    .bearing{opacity:.18;right:-220px}
+  }
+  @media(max-width:560px){
+    .prod-grid{grid-template-columns:1fr}
+    .ind-grid,.flow,.foot-top{grid-template-columns:1fr}
+    .about-facts{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="wrap nav">
+    <a href="#top" class="brand">
+      <svg class="ring" viewBox="0 0 100 100" fill="none"><circle cx="50" cy="50" r="44" stroke="#0B6E4F" stroke-width="7"/><circle cx="50" cy="50" r="20" stroke="#E0A317" stroke-width="7"/><g fill="#0B6E4F"><circle cx="50" cy="14" r="5"/><circle cx="50" cy="86" r="5"/><circle cx="14" cy="50" r="5"/><circle cx="86" cy="50" r="5"/><circle cx="25" cy="25" r="5"/><circle cx="75" cy="25" r="5"/><circle cx="25" cy="75" r="5"/><circle cx="75" cy="75" r="5"/></g></svg>
+      <span>POWER<em>AGRO</em></span>
+    </a>
+    <nav class="navlinks">
+      <a href="#products">Products</a>
+      <a href="#industries">Industries</a>
+      <a href="#trade">Global Trade</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+      <a href="#contact" class="btn btn-dark" style="padding:.6rem 1.1rem">Request a Quote</a>
+    </nav>
+    <button class="menu-btn" aria-label="Menu" onclick="document.querySelector('.navlinks').style.display='flex'">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#12211C" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="top" style="padding:0">
+  <svg class="bearing" viewBox="0 0 200 200" fill="none" aria-hidden="true">
+    <circle cx="100" cy="100" r="92" stroke="rgba(224,163,23,.5)" stroke-width="3"/>
+    <circle cx="100" cy="100" r="74" stroke="rgba(255,255,255,.28)" stroke-width="10"/>
+    <circle cx="100" cy="100" r="40" stroke="rgba(255,255,255,.28)" stroke-width="10"/>
+    <circle cx="100" cy="100" r="20" fill="rgba(224,163,23,.35)"/>
+    <g fill="rgba(255,255,255,.5)">
+      <script>/* balls drawn below */</script>
+    </g>
+    <g fill="rgba(224,163,23,.85)" id="balls"></g>
+  </svg>
+  <div class="wrap">
+    <div class="hero-inner">
+      <span class="eyebrow">Import &amp; Export · Precision Bearings</span>
+      <h1>Bearings that move the <b>world's machinery</b> — sourced globally, delivered reliably.</h1>
+      <p>Power Agro connects manufacturers and industry with genuine agricultural and industrial bearings from the world's most trusted brands, backed by disciplined logistics and trade documentation out of Mumbai, India.</p>
+      <div class="hero-cta">
+        <a href="#products" class="btn btn-gold">Explore our range →</a>
+        <a href="#contact" class="btn btn-ghost">Talk to our trade desk</a>
+      </div>
+      <div class="metrics">
+        <div class="metric"><b>45,000+</b><span>Bearing SKUs catalogued</span></div>
+        <div class="metric"><b>8</b><span>Premier global brands</span></div>
+        <div class="metric"><b>Since 1980</b><span>Group heritage in bearings</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BRANDS -->
+<section class="brands" style="padding:44px 0">
+  <div class="wrap">
+    <p style="text-align:center;font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;color:var(--steel);margin-bottom:1.6rem;font-family:'Archivo',sans-serif;font-weight:600">Trusted brands we source and supply</p>
+    <div class="brand-row">
+      <div class="chip">FAG · INA</div>
+      <div class="chip">SKF</div>
+      <div class="chip">Timken</div>
+      <div class="chip">NSK</div>
+      <div class="chip">NTN</div>
+      <div class="chip">KOYO</div>
+      <div class="chip">NACHI</div>
+      <div class="chip">Schaeffler</div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section id="products">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Product Range</span>
+      <h2>Every bearing type your line depends on</h2>
+      <p>From heavy-duty industrial rolling elements to hard-working agricultural units, we supply genuine, application-matched bearings across categories.</p>
+    </div>
+    <div class="prod-grid">
+      <div class="prod"><span class="no">01</span>
+        <svg class="ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="24" cy="24" r="18"/><circle cx="24" cy="24" r="7"/><circle cx="24" cy="8" r="2.4" fill="currentColor"/><circle cx="24" cy="40" r="2.4" fill="currentColor"/><circle cx="8" cy="24" r="2.4" fill="currentColor"/><circle cx="40" cy="24" r="2.4" fill="currentColor"/></svg>
+        <h3>Deep Groove Ball Bearings</h3>
+        <p>Versatile, low-friction bearings for electric motors, pumps, gearboxes and general rotating equipment.</p>
+      </div>
+      <div class="prod"><span class="no">02</span>
+        <svg class="ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2"><ellipse cx="24" cy="24" rx="18" ry="12"/><path d="M14 16v16M24 13v22M34 16v16"/></svg>
+        <h3>Tapered &amp; Cylindrical Roller</h3>
+        <p>High radial and axial load capacity for axles, transmissions and heavy machinery under combined loads.</p>
+      </div>
+      <div class="prod"><span class="no">03</span>
+        <svg class="ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="24" cy="24" r="18"/><path d="M24 6a18 18 0 0 1 0 36"/><path d="M12 24h24"/></svg>
+        <h3>Spherical Roller Bearings</h3>
+        <p>Self-aligning design that tolerates shaft misalignment in vibrating screens, crushers and conveyors.</p>
+      </div>
+      <div class="prod"><span class="no">04</span>
+        <svg class="ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="9" y="16" width="30" height="16" rx="2"/><path d="M16 16v16M24 16v16M32 16v16"/></svg>
+        <h3>Agricultural &amp; Farm Bearings</h3>
+        <p>Sealed, contamination-resistant units for tractors, harvesters, tillers and irrigation equipment.</p>
+      </div>
+      <div class="prod"><span class="no">05</span>
+        <svg class="ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="8" y="20" width="32" height="8" rx="4"/><circle cx="16" cy="24" r="2" fill="currentColor"/><circle cx="24" cy="24" r="2" fill="currentColor"/><circle cx="32" cy="24" r="2" fill="currentColor"/></svg>
+        <h3>Pillow Blocks &amp; Housed Units</h3>
+        <p>Ready-to-mount plummer blocks and flange units for fast installation and easy maintenance.</p>
+      </div>
+      <div class="prod"><span class="no">06</span>
+        <svg class="ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="24" cy="24" r="18"/><path d="M24 24l10-10M24 24l-8 8"/><circle cx="24" cy="24" r="3" fill="currentColor"/></svg>
+        <h3>Special &amp; Precision Bearings</h3>
+        <p>Angular contact, thrust and application-specific bearings sourced to exact technical specification.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INDUSTRIES -->
+<section id="industries" style="background:var(--paper);border-top:1px solid var(--line)">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Industries Served</span>
+      <h2>Keeping critical sectors turning</h2>
+      <p>Our bearings support machinery across the industries that build, grow and move economies.</p>
+    </div>
+    <div class="ind-grid">
+      <div class="ind"><h3>Agriculture</h3><p>Tractors, harvesters, seeders and irrigation drives.</p></div>
+      <div class="ind"><h3>Steel &amp; Metals</h3><p>Rolling mills, furnaces and continuous casting lines.</p></div>
+      <div class="ind"><h3>Cement &amp; Mining</h3><p>Crushers, mills, kilns and material-handling systems.</p></div>
+      <div class="ind"><h3>Automotive</h3><p>Powertrain, wheel hubs and ancillary components.</p></div>
+      <div class="ind"><h3>Power &amp; Energy</h3><p>Turbines, generators, pumps and wind assemblies.</p></div>
+      <div class="ind"><h3>Textiles</h3><p>Spinning, weaving and processing machinery.</p></div>
+      <div class="ind"><h3>Material Handling</h3><p>Conveyors, cranes, hoists and warehouse systems.</p></div>
+      <div class="ind"><h3>General Engineering</h3><p>Pumps, compressors, motors and gearboxes.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="about">
+  <div class="wrap split">
+    <div>
+      <span class="eyebrow">Who We Are</span>
+      <h2 style="margin:.8rem 0 1.2rem;font-size:clamp(1.8rem,3.5vw,2.6rem)">A trade house built on genuine parts and dependable delivery</h2>
+      <p>Power Agro is an import and export house dedicated to agricultural and industrial bearings. We source directly from the world's leading manufacturers and their authorised channels, ensuring every unit we supply is genuine and traceable.</p>
+      <p>Part of a bearings group with roots dating to 1980, we combine deep product knowledge with rigorous trade documentation, customs handling and logistics — so buyers across India and international markets receive the right part, on time.</p>
+      <div class="about-facts">
+        <div class="fact"><b>Genuine sourcing</b><span>Authorised brand channels only</span></div>
+        <div class="fact"><b>Global reach</b><span>Import &amp; export logistics</span></div>
+        <div class="fact"><b>Technical matching</b><span>Application-correct selection</span></div>
+        <div class="fact"><b>Trade compliance</b><span>Documentation &amp; customs handled</span></div>
+      </div>
+    </div>
+    <div class="globe">
+      <svg viewBox="0 0 400 320" fill="none">
+        <rect width="400" height="320" fill="#06392A"/>
+        <g stroke="rgba(255,255,255,.18)" stroke-width="1">
+          <ellipse cx="200" cy="160" rx="150" ry="150"/>
+          <ellipse cx="200" cy="160" rx="150" ry="55"/>
+          <ellipse cx="200" cy="160" rx="150" ry="105"/>
+          <ellipse cx="200" cy="160" rx="55" ry="150"/>
+          <ellipse cx="200" cy="160" rx="105" ry="150"/>
+          <line x1="50" y1="160" x2="350" y2="160"/>
+          <line x1="200" y1="10" x2="200" y2="310"/>
+        </g>
+        <g fill="#E0A317">
+          <circle cx="200" cy="160" r="5"/>
+          <circle cx="120" cy="110" r="4"/><circle cx="290" cy="130" r="4"/>
+          <circle cx="150" cy="230" r="4"/><circle cx="270" cy="215" r="4"/>
+          <circle cx="255" cy="80" r="4"/>
+        </g>
+        <g stroke="#E0A317" stroke-width="1.4" stroke-dasharray="3 4" opacity=".8" fill="none">
+          <path d="M200 160 Q150 100 120 110"/>
+          <path d="M200 160 Q260 110 290 130"/>
+          <path d="M200 160 Q180 210 150 230"/>
+          <path d="M200 160 Q250 200 270 215"/>
+          <path d="M200 160 Q240 100 255 80"/>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- TRADE FLOW -->
+<section id="trade">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">How We Work</span>
+      <h2>From enquiry to delivered consignment</h2>
+      <p>A clear, four-stage process that keeps every order accountable end to end.</p>
+    </div>
+    <div class="flow">
+      <div class="step"><div class="num">01</div><h3>Enquiry &amp; Selection</h3><p>Share your designation or application; we match the correct bearing and brand.</p></div>
+      <div class="step"><div class="num">02</div><h3>Quote &amp; Sourcing</h3><p>Competitive pricing with lead times, sourced through authorised channels.</p></div>
+      <div class="step"><div class="num">03</div><h3>Documentation</h3><p>Invoice, packing list, and full import/export paperwork prepared and verified.</p></div>
+      <div class="step"><div class="num">04</div><h3>Logistics &amp; Delivery</h3><p>Customs clearance and shipping coordinated to your door, tracked throughout.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="contact">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Get in Touch</span>
+      <h2>Request a quote or product enquiry</h2>
+      <p>Tell us the bearing designation or application, and our trade desk will respond with pricing and availability.</p>
+    </div>
+    <div class="contact-grid">
+      <div>
+        <div class="field"><label for="n">Name</label><input id="n" type="text" placeholder="Your full name"></div>
+        <div class="field"><label for="c">Company</label><input id="c" type="text" placeholder="Company name"></div>
+        <div class="field"><label for="e">Email</label><input id="e" type="email" placeholder="you@company.com"></div>
+        <div class="field"><label for="en">Enquiry type</label>
+          <select id="en"><option>Product enquiry / quote</option><option>Bulk / export order</option><option>Distributor partnership</option><option>General question</option></select>
+        </div>
+        <div class="field"><label for="m">Message</label><textarea id="m" rows="4" placeholder="Bearing designation, quantity, application…"></textarea></div>
+        <button class="btn btn-dark" onclick="submitEnquiry()">Send enquiry →</button>
+        <p id="msg" style="margin-top:.9rem;font-size:.9rem;color:var(--green);font-weight:600;display:none">Thanks — connect this form to your email or backend to receive enquiries.</p>
+      </div>
+      <div class="cinfo">
+        <div class="row">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <div><b>Office</b><span>2nd Floor-1, 12/14 Hira Bhuvan, Dariyasthan Street,<br>Masjid Bunder Station, Mumbai 400003, India</span></div>
+        </div>
+        <div class="row">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 2.1-.5c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.7 2z"/></svg>
+          <div><b>Phone / WhatsApp</b><span><a href="tel:+919820717873" style="color:var(--green)">+91 98207 17873</a></span></div>
+        </div>
+        <div class="row">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>
+          <div><b>Email</b><span><a href="mailto:info.poweragro@gmail.com" style="color:var(--green)">info.poweragro@gmail.com</a></span></div>
+        </div>
+        <div class="row">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7L9 18l-5-5"/></svg>
+          <div><b>GSTIN</b><span>27AAZHA9435Q1Z5</span></div>
+        </div>
+        <div class="row">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          <div><b>Trade hours</b><span>Monday – Saturday, 10:00 – 18:30 IST</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div>
+        <div class="foot-brand">
+          <svg width="26" height="26" viewBox="0 0 100 100" fill="none"><circle cx="50" cy="50" r="44" stroke="#fff" stroke-width="7"/><circle cx="50" cy="50" r="20" stroke="#E0A317" stroke-width="7"/></svg>
+          POWER AGRO
+        </div>
+        <p style="max-width:320px;font-size:.92rem">Import and export of genuine agricultural and industrial bearings from the world's leading manufacturers.</p>
+      </div>
+      <div>
+        <h4>Explore</h4>
+        <a href="#products">Products</a>
+        <a href="#industries">Industries</a>
+        <a href="#trade">Global Trade</a>
+        <a href="#about">About Us</a>
+      </div>
+      <div>
+        <h4>Brands</h4>
+        <a href="#">FAG · INA · Schaeffler</a>
+        <a href="#">SKF · Timken</a>
+        <a href="#">NSK · NTN</a>
+        <a href="#">KOYO · NACHI</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© <span id="yr"></span> Power Agro · GSTIN 27AAZHA9435Q1Z5</span>
+      <span>Masjid Bunder, Mumbai 400003 · info.poweragro@gmail.com · +91 98207 17873</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('yr').textContent = new Date().getFullYear();
+  // hero bearing balls
+  var balls='';
+  for(var i=0;i<12;i++){var a=i*30*Math.PI/180;var x=100+57*Math.cos(a);var y=100+57*Math.sin(a);balls+='<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="7"/>';}
+  document.getElementById('balls').innerHTML=balls;
+  function submitEnquiry(){document.getElementById('msg').style.display='block';}
+</script>
+</body>
+</html>
