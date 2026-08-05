@@ -1,34 +1,35 @@
 import type { Metadata } from "next";
-import { Inter, Archivo } from "next/font/google";
+import { DM_Sans, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
+const dmSans = DM_Sans({
+  variable: "--font-dm-sans",
   subsets: ["latin"],
   display: "swap",
+  weight: ["300", "400", "500", "600", "700"],
 });
 
-const archivo = Archivo({
-  variable: "--font-archivo",
+const plusJakarta = Plus_Jakarta_Sans({
+  variable: "--font-plus-jakarta",
   subsets: ["latin"],
   display: "swap",
+  weight: ["400", "500", "600", "700", "800"],
 });
 
 export const metadata: Metadata = {
-  title: "Power Agro — Global Trade in Agricultural & Industrial Bearings",
-  description: "Power Agro is a Mumbai-based import and export house specialising in agricultural and industrial bearings from the world's leading manufacturers.",
+  title: "Power Agro — Bearing Importers & Exporters, Mumbai",
+  description:
+    "Power Agro is a Mumbai-based import & export trade house for genuine agricultural and industrial bearings — FAG, SKF, Timken, NSK, NTN, KOYO, NACHI, Schaeffler.",
   keywords: [
-    "bearings",
-    "agricultural bearings",
-    "industrial bearings",
-    "FAG bearings",
-    "SKF bearings",
-    "Timken bearings",
-    "NSK bearings",
     "bearing importer Mumbai",
     "bearing exporter India",
-    "Schaeffler bearings"
-  ]
+    "FAG bearings India",
+    "SKF bearings supplier",
+    "Timken India",
+    "agricultural bearings",
+    "industrial bearings",
+    "NSK NTN KOYO NACHI",
+  ],
 };
 
 export default function RootLayout({
@@ -39,11 +40,11 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${archivo.variable} h-full antialiased scroll-smooth`}
+      className={`${dmSans.variable} ${plusJakarta.variable} h-full antialiased scroll-smooth overflow-x-hidden`}
       suppressHydrationWarning
     >
-      <body 
-        className="min-h-full flex flex-col bg-white text-ink dark:bg-primary-dark dark:text-paper"
+      <body
+        className="min-h-full flex flex-col overflow-x-hidden w-full"
         suppressHydrationWarning
       >
         {children}
