@@ -86,7 +86,6 @@ export default function Home() {
   const [searchResult, setSearchResult] = useState<{
     code?: string; type: string; d?: number; D?: number; B?: number; brands: string[]; notFound?: boolean;
   } | null>(null);
-  const [selectedBrandIdx, setSelectedBrandIdx] = useState(0);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -96,12 +95,12 @@ export default function Home() {
   }, []);
 
   const bearingDb: Record<string, { type: string; d: number; D: number; B: number; brands: string[] }> = {
-    "6204":  { type: "Deep Groove Ball Bearing",    d: 20,  D: 47,  B: 14,    brands: ["SKF","FAG","NSK","NTN"] },
-    "6008":  { type: "Deep Groove Ball Bearing",    d: 40,  D: 68,  B: 15,    brands: ["SKF","FAG","KOYO"] },
-    "22220": { type: "Spherical Roller Bearing",    d: 100, D: 180, B: 46,    brands: ["SKF","FAG","Timken"] },
-    "30204": { type: "Tapered Roller Bearing",      d: 20,  D: 47,  B: 15.25, brands: ["Timken","FAG","NTN","NACHI"] },
-    "51105": { type: "Thrust Ball Bearing",         d: 25,  D: 37,  B: 9,     brands: ["SKF","FAG","NSK"] },
-    "UC205": { type: "Pillow Block Insert Bearing", d: 25,  D: 52,  B: 34.1,  brands: ["NTN","KOYO"] },
+    "6204": { type: "Deep Groove Ball Bearing", d: 20, D: 47, B: 14, brands: ["SKF", "FAG", "NSK", "NTN"] },
+    "6008": { type: "Deep Groove Ball Bearing", d: 40, D: 68, B: 15, brands: ["SKF", "FAG", "KOYO"] },
+    "22220": { type: "Spherical Roller Bearing", d: 100, D: 180, B: 46, brands: ["SKF", "FAG", "Timken"] },
+    "30204": { type: "Tapered Roller Bearing", d: 20, D: 47, B: 15.25, brands: ["Timken", "FAG", "NTN", "NACHI"] },
+    "51105": { type: "Thrust Ball Bearing", d: 25, D: 37, B: 9, brands: ["SKF", "FAG", "NSK"] },
+    "UC205": { type: "Pillow Block Insert Bearing", d: 25, D: 52, B: 34.1, brands: ["NTN", "KOYO"] },
   };
 
   const handleSearch = (val: string) => {
@@ -111,51 +110,35 @@ export default function Home() {
     const key = Object.keys(bearingDb).find(k => k.includes(norm) || norm.includes(k));
     setSearchResult(key
       ? { code: key, ...bearingDb[key] }
-      : { notFound: true, type: "Custom", brands: ["FAG","SKF","Timken","NSK","NTN","NACHI","KOYO"] }
+      : { notFound: true, type: "Custom", brands: ["FAG", "SKF", "Timken", "NSK", "NTN", "NACHI", "KOYO"] }
     );
   };
 
-  const ballAngles = Array.from({ length: 12 }, (_, i) => {
-    const a = (i * 30 * Math.PI) / 180;
-    return { x: +(100 + 57 * Math.cos(a)).toFixed(1), y: +(100 + 57 * Math.sin(a)).toFixed(1) };
-  });
-
   const brands = [
-    { name: "FAG · INA",  origin: "Germany", desc: "Premium Schaeffler automotive & industrial roller bearings sourced directly from certified European channels." },
-    { name: "SKF",        origin: "Sweden",  desc: "Global leader in high-performance rotating equipment — bearings, seals, and lubrication systems." },
-    { name: "Timken",     origin: "USA",     desc: "Tapered roller bearings for heavy-duty industrial gearing and demanding applications." },
-    { name: "NSK",        origin: "Japan",   desc: "Super-precision ball bearings and linear motion components for high-accuracy machinery." },
-    { name: "NTN",        origin: "Japan",   desc: "Standard and custom bearings for automotive & manufacturing — broad catalog coverage." },
-    { name: "KOYO",       origin: "Japan",   desc: "Heavy agricultural & automotive steering machinery bearings, part of the JTEKT group." },
-    { name: "NACHI",      origin: "Japan",   desc: "Extremely durable bearings for robotics, CNC machine tools, and high-cycle applications." },
+    { name: "FAG · INA", origin: "Germany", desc: "Premium Schaeffler automotive & industrial roller bearings sourced directly from certified European channels." },
+    { name: "SKF", origin: "Sweden", desc: "Global leader in high-performance rotating equipment — bearings, seals, and lubrication systems." },
+    { name: "Timken", origin: "USA", desc: "Tapered roller bearings for heavy-duty industrial gearing and demanding applications." },
+    { name: "NSK", origin: "Japan", desc: "Super-precision ball bearings and linear motion components for high-accuracy machinery." },
+    { name: "NTN", origin: "Japan", desc: "Standard and custom bearings for automotive & manufacturing — broad catalog coverage." },
+    { name: "KOYO", origin: "Japan", desc: "Heavy agricultural & automotive steering machinery bearings, part of the JTEKT group." },
+    { name: "NACHI", origin: "Japan", desc: "Extremely durable bearings for robotics, CNC machine tools, and high-cycle applications." },
     { name: "Schaeffler", origin: "Germany", desc: "Engineered solutions and high-grade bearings for aerospace, rail, and wind energy." },
   ];
 
   const products = [
-    { id:"01", title:"Deep Groove Ball",       group:"ball",    img:"/hero_bearings.png", desc:"Highly versatile, low-friction, high-speed bearings for motors, pumps & gearboxes.",        tag:"Radial · High Speed",       specs:{ bore:"10–1200 mm", speed:"32,000 RPM", prec:"P0/P6/P5" } },
-    { id:"02", title:"Tapered & Cylindrical",  group:"roller",  img:"/hero_bearings.png", desc:"Massive radial + axial load capacity for industrial gearboxes and wheel hubs.",              tag:"High Load · Rigid",          specs:{ bore:"15–1800 mm", speed:"12,000 RPM", prec:"P6/P5/P4" } },
-    { id:"03", title:"Spherical Roller",       group:"roller",  img:"/hero_bearings.png", desc:"Self-aligning heavy-duty bearings handling misalignment, vibration & shock loads.",          tag:"Self-Aligning · Shock",      specs:{ bore:"20–2200 mm", speed:"8,000 RPM",  prec:"P6/P5" } },
-    { id:"04", title:"Agricultural & Farm",    group:"housed",  img:"/agri_bearing.png",  desc:"Sealed, dust-proof units for tractors, disk harrows, and combine harvesters.",               tag:"Triple Seal · Dust Tight",   specs:{ bore:"20–120 mm",  speed:"4,500 RPM",  prec:"Standard" } },
-    { id:"05", title:"Pillow Blocks & Housed", group:"housed",  img:"/agri_bearing.png",  desc:"Cast iron housings ready to mount — conveyors, fans, industrial drives.",                   tag:"Plummer · Flange",           specs:{ bore:"12–140 mm",  speed:"6,000 RPM",  prec:"Cast Iron" } },
-    { id:"06", title:"Precision & Specialty",  group:"special", img:"/hero_bearings.png", desc:"Angular contact, thrust, and custom-sourced bearings for high-accuracy specialty lines.",    tag:"Micron · Custom",            specs:{ bore:"5–600 mm",   speed:"48,000 RPM", prec:"P4/P2" } },
-  ];
-
-  const industries = [
-    { name:"Agriculture",        desc:"Harvesters, tillers, disk harrows, pump drives" },
-    { name:"Steel & Metals",     desc:"Rolling mills, high-temperature casting lines" },
-    { name:"Cement & Mining",    desc:"Jaw crushers, vibrating screens, conveyors" },
-    { name:"Automotive",         desc:"Wheel hubs, transmissions, drivetrains" },
-    { name:"Power & Energy",     desc:"Steam turbines, wind generators, thermal pumps" },
-    { name:"Textiles",           desc:"High-speed spinning, carding, loom rollers" },
-    { name:"Material Handling",  desc:"Cranes, hoists, stackers, sorting conveyors" },
-    { name:"General Engineering",desc:"Motors, compressors, blowers, gearboxes" },
+    { id: "01", title: "Deep Groove Ball", group: "ball", img: "/images/1.jpg", desc: "Highly versatile, low-friction, high-speed bearings for motors, pumps & gearboxes.", tag: "Radial · High Speed", specs: { bore: "10–1200 mm", speed: "32,000 RPM", prec: "P0/P6/P5" } },
+    { id: "02", title: "Tapered & Cylindrical", group: "roller", img: "/images/2.png", desc: "Massive radial + axial load capacity for industrial gearboxes and wheel hubs.", tag: "High Load · Rigid", specs: { bore: "15–1800 mm", speed: "12,000 RPM", prec: "P6/P5/P4" } },
+    { id: "03", title: "Spherical Roller", group: "roller", img: "/images/3.jpg", desc: "Self-aligning heavy-duty bearings handling misalignment, vibration & shock loads.", tag: "Self-Aligning · Shock", specs: { bore: "20–2200 mm", speed: "8,000 RPM", prec: "P6/P5" } },
+    { id: "04", title: "Agricultural & Farm", group: "housed", img: "/images/4.jpg", desc: "Sealed, dust-proof units for tractors, disk harrows, and combine harvesters.", tag: "Triple Seal · Dust Tight", specs: { bore: "20–120 mm", speed: "4,500 RPM", prec: "Standard" } },
+    { id: "05", title: "Pillow Blocks & Housed", group: "housed", img: "/images/5.jpg", desc: "Cast iron housings ready to mount — conveyors, fans, industrial drives.", tag: "Plummer · Flange", specs: { bore: "12–140 mm", speed: "6,000 RPM", prec: "Cast Iron" } },
+    { id: "06", title: "Precision & Specialty", group: "special", img: "/images/6.png", desc: "Angular contact, thrust, and custom-sourced bearings for high-accuracy specialty lines.", tag: "Micron · Custom", specs: { bore: "5–600 mm", speed: "48,000 RPM", prec: "P4/P2" } },
   ];
 
   const steps = [
-    { num:"01", title:"Tell us what you need",    desc:"Share your bearing SKU, dimension, or application. Our desk narrows down the right designation." },
-    { num:"02", title:"We source it directly",    desc:"Genuine, traceable parts from certified OEM factories in Europe, USA, and Japan — never grey market." },
-    { num:"03", title:"Docs & compliance sorted", desc:"Export invoice, packing list, certificate of origin and customs clearance — handled by our Mumbai team." },
-    { num:"04", title:"Delivered to your door",   desc:"Securely packed, anti-moisture wrapped, tracked door-to-door. Authentic every time." },
+    { num: "01", title: "Tell us what you need", desc: "Share your bearing SKU, dimension, or application. Our desk narrows down the right designation." },
+    { num: "02", title: "We source it directly", desc: "Genuine, traceable parts from certified OEM factories in Europe, USA, and Japan — never grey market." },
+    { num: "03", title: "Docs & compliance sorted", desc: "Export invoice, packing list, certificate of origin and customs clearance — handled by our Mumbai team." },
+    { num: "04", title: "Delivered to your door", desc: "Securely packed, anti-moisture wrapped, tracked door-to-door. Authentic every time." },
   ];
 
   const filteredProducts = activeCategoryFilter === "all" ? products : products.filter(p => p.group === activeCategoryFilter);
@@ -166,7 +149,7 @@ export default function Home() {
     setFormError(""); setFormSubmitted(true);
   };
 
-  const navLinks: [string, string][] = [["#products","Products"],["#industries","Industries"],["#trade","Process"],["#about","About"],["#contact","Contact"]];
+  const navLinks: [string, string][] = [["#products", "Products"], ["#trade", "Process"], ["#about", "About"], ["#contact", "Contact"]];
 
   return (
     <main className="min-h-screen font-sans overflow-x-hidden bg-[#F5F3EE] text-[#1A1A18]">
@@ -248,7 +231,7 @@ export default function Home() {
       <section id="top" className="relative overflow-hidden bg-[#111210] text-[#F5F3EE]" style={{ minHeight: "92vh" }}>
         {/* Full-bleed hero image */}
         <div className="absolute inset-0 z-0">
-          <Image src="/hero_bearings.png" alt="Industrial bearings" fill className="object-cover opacity-35" priority />
+          <Image src="/images/9.png" alt="Industrial bearings" fill className="object-cover opacity-35" priority />
           <div className="absolute inset-0" style={{ background: "linear-gradient(to right, rgba(17,18,16,0.95) 0%, rgba(17,18,16,0.7) 55%, rgba(17,18,16,0.35) 100%)" }} />
         </div>
 
@@ -256,16 +239,6 @@ export default function Home() {
         <div className="absolute inset-0 pointer-events-none z-[1]"
           style={{ background: "radial-gradient(ellipse 55% 55% at 70% 45%, rgba(61,92,69,0.22) 0%, transparent 70%)" }} />
 
-        {/* Rotating bearing watermark */}
-        <div className="absolute right-[-60px] top-1/2 -translate-y-1/2 w-[480px] h-[480px] opacity-[0.08] animate-spin-slow pointer-events-none select-none z-[1]">
-          <svg viewBox="0 0 200 200" fill="none" className="w-full h-full">
-            <circle cx="100" cy="100" r="92" stroke="#C8BFA8" strokeWidth="1" />
-            <circle cx="100" cy="100" r="74" stroke="#C8BFA8" strokeWidth="5" strokeDasharray="4 3.5" />
-            <circle cx="100" cy="100" r="42" stroke="#C8BFA8" strokeWidth="4.5" />
-            <circle cx="100" cy="100" r="18" fill="#C8BFA8" opacity="0.3" />
-            <g fill="#D4B896">{ballAngles.map((b, i) => <circle key={i} cx={b.x} cy={b.y} r="6" />)}</g>
-          </svg>
-        </div>
 
         {/* Grid lines */}
         <div className="absolute inset-0 pointer-events-none z-[1] opacity-[0.04] grid-bg" />
@@ -353,7 +326,7 @@ export default function Home() {
       {/* ══ HERO IMAGE STRIP ══ */}
       <div className="grid md:grid-cols-2 h-[320px] md:h-[420px] overflow-hidden">
         <div className="img-overlay relative">
-          <Image src="/hero_bearings.png" alt="Precision bearings" fill className="object-cover" />
+          <Image src="/images/10.jpg" alt="Precision bearings" fill className="object-cover" />
           <div className="absolute inset-0 z-10 flex items-end p-8">
             <div>
               <div className="text-[10.5px] font-bold uppercase tracking-[0.2em] text-[#D4B896] mb-1">Precision Engineering</div>
@@ -362,7 +335,7 @@ export default function Home() {
           </div>
         </div>
         <div className="img-overlay relative">
-          <Image src="/agri_bearing.png" alt="Agricultural bearings" fill className="object-cover" />
+          <Image src="/images/8.jpg" alt="Agricultural bearings" fill className="object-cover" />
           <div className="absolute inset-0 z-10 flex items-end p-8">
             <div>
               <div className="text-[10.5px] font-bold uppercase tracking-[0.2em] text-[#D4B896] mb-1">Agricultural Sector</div>
@@ -376,7 +349,7 @@ export default function Home() {
       <section className="py-20 border-b border-[#E2DDCF]">
         <div className="mx-auto max-w-6xl px-6 lg:px-8">
           <div className="grid md:grid-cols-2 gap-12 items-stretch">
-            
+
             {/* Left Column: Title + Interactive Blueprint */}
             <div className="reveal-left flex flex-col justify-between h-full">
               <div>
@@ -391,7 +364,7 @@ export default function Home() {
                 </p>
                 <div className="mt-5 flex flex-wrap items-center gap-2">
                   <span className="text-[11px] font-semibold text-[#8C5C3E] mr-1">Try:</span>
-                  {["6204","22220","30204","UC205"].map(ex => (
+                  {["6204", "22220", "30204", "UC205"].map(ex => (
                     <button key={ex} onClick={() => handleSearch(ex)}
                       className="px-3 py-1.5 rounded-lg border border-[#3D5C45]/30 bg-[#3D5C45]/6 text-[#3D5C45] text-[11.5px] font-bold hover:bg-[#3D5C45]/14 transition-all duration-200 hover:-translate-y-0.5 cursor-pointer">
                       {ex}
@@ -403,17 +376,17 @@ export default function Home() {
               {/* Dynamic Blueprint Graphic */}
               <div className="mt-8 p-6 rounded-2xl border border-[#E2DDCF] bg-white flex flex-col items-center justify-center relative min-h-[220px] flex-grow">
                 <span className="absolute top-4 left-4 text-[9px] font-bold uppercase tracking-wider text-[#8C5C3E]">Blueprint Schematic</span>
-                
+
                 {/* Schematic SVG */}
                 <svg width="240" height="160" viewBox="0 0 240 160" fill="none" className="text-[#3D5C45]">
                   {/* Outer circle (D) */}
                   <circle cx="100" cy="80" r="50" stroke="currentColor" strokeWidth="1.5" strokeDasharray="3 3" opacity="0.3" />
                   <circle cx="100" cy="80" r="46" stroke="currentColor" strokeWidth="2.5" />
-                  
+
                   {/* Inner circle (d) */}
                   <circle cx="100" cy="80" r="22" stroke="currentColor" strokeWidth="2.5" />
                   <circle cx="100" cy="80" r="18" stroke="currentColor" strokeWidth="1.5" strokeDasharray="3 3" opacity="0.3" />
-                  
+
                   {/* Shaft representation */}
                   <line x1="100" y1="20" x2="100" y2="140" stroke="currentColor" strokeWidth="0.8" strokeDasharray="4 4" opacity="0.4" />
                   <line x1="40" y1="80" x2="160" y2="80" stroke="currentColor" strokeWidth="0.8" strokeDasharray="4 4" opacity="0.4" />
@@ -487,7 +460,7 @@ export default function Home() {
                           </div>
                           <div className="grid grid-cols-2 gap-5 text-[12.5px]">
                             <div className="space-y-3">
-                              {[["Type", searchResult.type],["Brands", searchResult.brands.join(", ")]].map(([k,v]) => (
+                              {[["Type", searchResult.type], ["Brands", searchResult.brands.join(", ")]].map(([k, v]) => (
                                 <div key={k as string}>
                                   <div className="text-[9.5px] uppercase tracking-wider text-[#F5F3EE]/30 mb-0.5">{k}</div>
                                   <div className="font-semibold text-[#F5F3EE] leading-snug">{v}</div>
@@ -495,7 +468,7 @@ export default function Home() {
                               ))}
                             </div>
                             <div className="space-y-3 pl-5 border-l border-[#F5F3EE]/8">
-                              {[["Bore (d)", `${searchResult.d} mm`],["Outer (D)", `${searchResult.D} mm`],["Width (B)", `${searchResult.B} mm`]].map(([k,v]) => (
+                              {[["Bore (d)", `${searchResult.d} mm`], ["Outer (D)", `${searchResult.D} mm`], ["Width (B)", `${searchResult.B} mm`]].map(([k, v]) => (
                                 <div key={k as string}>
                                   <div className="text-[9.5px] uppercase tracking-wider text-[#F5F3EE]/30 mb-0.5">{k}</div>
                                   <div className="font-mono font-semibold text-[#F5F3EE]">{v}</div>
@@ -529,117 +502,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ══ BRANDS — horizontal moving cards ══ */}
-      <section className="py-16 bg-[#EAE7E0] border-b border-[#E2DDCF] overflow-hidden">
-        {/* Header */}
-        <div className="mx-auto max-w-6xl px-6 lg:px-8 mb-10 reveal">
-          <div className="flex items-center gap-4">
-            <span className="text-[10.5px] font-bold uppercase tracking-[0.2em] text-[#8C5C3E] shrink-0">
-              Brands we source &amp; supply
-            </span>
-            <div className="flex-1 h-px bg-[#C8BFA8]/60" />
-          </div>
-        </div>
-
-        {/* Row 1 — scrolls LEFT */}
-        <div className="relative mb-3">
-          {/* Fade masks */}
-          <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-24 z-10"
-            style={{ background: "linear-gradient(to right, #EAE7E0, transparent)" }} />
-          <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-24 z-10"
-            style={{ background: "linear-gradient(to left, #EAE7E0, transparent)" }} />
-
-          <div className="flex" style={{ animation: "marquee 32s linear infinite" }}
-            onMouseEnter={e => (e.currentTarget.style.animationPlayState = "paused")}
-            onMouseLeave={e => (e.currentTarget.style.animationPlayState = "running")}>
-            {[...brands, ...brands, ...brands].map((brand, i) => (
-              <button
-                key={i}
-                onClick={() => setSelectedBrandIdx(i % brands.length)}
-                className="shrink-0 mx-2 rounded-2xl border px-7 py-5 text-center cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
-                style={{
-                  background: selectedBrandIdx === i % brands.length ? "#1A1A18" : "#F5F3EE",
-                  borderColor: selectedBrandIdx === i % brands.length ? "#1A1A18" : "rgba(200,191,168,0.6)",
-                  minWidth: "140px",
-                }}>
-                <span className="block font-display font-extrabold text-[13px] leading-tight mb-1"
-                  style={{ color: selectedBrandIdx === i % brands.length ? "#D4B896" : "#1A1A18" }}>
-                  {brand.name}
-                </span>
-                <span className="block text-[9px] uppercase tracking-[0.18em] font-bold"
-                  style={{ color: selectedBrandIdx === i % brands.length ? "rgba(212,184,150,0.5)" : "#8C5C3E" }}>
-                  {brand.origin}
-                </span>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Row 2 — scrolls RIGHT (reverse) */}
-        <div className="relative mb-10">
-          <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-24 z-10"
-            style={{ background: "linear-gradient(to right, #EAE7E0, transparent)" }} />
-          <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-24 z-10"
-            style={{ background: "linear-gradient(to left, #EAE7E0, transparent)" }} />
-
-          <div className="flex" style={{ animation: "marquee 40s linear infinite reverse" }}
-            onMouseEnter={e => (e.currentTarget.style.animationPlayState = "paused")}
-            onMouseLeave={e => (e.currentTarget.style.animationPlayState = "running")}>
-            {[...brands, ...brands, ...brands].map((brand, i) => (
-              <button
-                key={i}
-                onClick={() => setSelectedBrandIdx(i % brands.length)}
-                className="shrink-0 mx-2 rounded-2xl border px-7 py-5 text-center cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
-                style={{
-                  background: selectedBrandIdx === i % brands.length ? "#1A1A18" : "#fff",
-                  borderColor: selectedBrandIdx === i % brands.length ? "#1A1A18" : "rgba(200,191,168,0.6)",
-                  minWidth: "140px",
-                }}>
-                <span className="block font-display font-extrabold text-[13px] leading-tight mb-1"
-                  style={{ color: selectedBrandIdx === i % brands.length ? "#D4B896" : "#1A1A18" }}>
-                  {brand.name}
-                </span>
-                <span className="block text-[9px] uppercase tracking-[0.18em] font-bold"
-                  style={{ color: selectedBrandIdx === i % brands.length ? "rgba(212,184,150,0.5)" : "#8C5C3E" }}>
-                  {brand.origin}
-                </span>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Selected brand detail panel */}
-        <div className="mx-auto max-w-6xl px-6 lg:px-8">
-          <div
-            key={selectedBrandIdx}
-            className="flex items-start gap-5 rounded-2xl p-6 border border-[#E2DDCF] bg-[#F5F3EE] animate-fade-in transition-all duration-300">
-            <div className="w-12 h-12 rounded-xl bg-[#1A1A18] flex items-center justify-center shrink-0">
-              <span className="font-display font-extrabold text-[11px] text-[#D4B896] uppercase tracking-wide leading-none text-center">
-                {brands[selectedBrandIdx].origin.slice(0, 2)}
-              </span>
-            </div>
-            <div className="flex-1">
-              <div className="flex flex-wrap items-center gap-2 mb-1.5">
-                <span className="font-display font-extrabold text-[15px] text-[#1A1A18]">
-                  {brands[selectedBrandIdx].name}
-                </span>
-                <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#3D5C45]/10 text-[#3D5C45] uppercase tracking-wider">
-                  {brands[selectedBrandIdx].origin}
-                </span>
-              </div>
-              <p className="text-[13.5px] leading-relaxed text-[#3D3C38]">
-                {brands[selectedBrandIdx].desc}
-              </p>
-            </div>
-            <div className="hidden sm:flex items-center gap-1.5 shrink-0 text-[11px] font-semibold text-[#8C5C3E]">
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5" />
-              </svg>
-              Click any card to explore
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* ══ PRODUCTS ══ */}
       <section id="products" className="py-24 bg-[#F5F3EE]">
@@ -660,11 +522,11 @@ export default function Home() {
 
           <div className="flex flex-wrap gap-2 mb-10 reveal">
             {[
-              { id:"all",     label:"All Types" },
-              { id:"ball",    label:"Ball Bearings" },
-              { id:"roller",  label:"Roller Bearings" },
-              { id:"housed",  label:"Agricultural" },
-              { id:"special", label:"Specialty" },
+              { id: "all", label: "All Types" },
+              { id: "ball", label: "Ball Bearings" },
+              { id: "roller", label: "Roller Bearings" },
+              { id: "housed", label: "Agricultural" },
+              { id: "special", label: "Specialty" },
             ].map(tab => (
               <button key={tab.id} onClick={() => setActiveCategoryFilter(tab.id)}
                 className="px-4 py-2 rounded-lg text-[12px] font-bold tracking-wide border cursor-pointer transition-all duration-200 hover:-translate-y-0.5"
@@ -702,7 +564,7 @@ export default function Home() {
                   {/* Specs */}
                   <div className="mt-5 rounded-xl p-4 bg-[#F5F3EE] border border-[#E2DDCF]">
                     <div className="grid grid-cols-3 gap-3 text-center">
-                      {[["Bore",product.specs.bore],["Speed",product.specs.speed],["Grade",product.specs.prec]].map(([k,v]) => (
+                      {[["Bore", product.specs.bore], ["Speed", product.specs.speed], ["Grade", product.specs.prec]].map(([k, v]) => (
                         <div key={k as string}>
                           <div className="text-[9px] uppercase tracking-wider text-[#8C5C3E] mb-0.5 font-semibold">{k}</div>
                           <div className="text-[11px] font-bold text-[#1A1A18] leading-tight">{v}</div>
@@ -720,37 +582,6 @@ export default function Home() {
                     </a>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ══ INDUSTRIES ══ */}
-      <section id="industries" className="py-24 bg-[#1A1A18]">
-        <div className="mx-auto max-w-6xl px-6 lg:px-8">
-          <div className="flex flex-col lg:flex-row lg:items-end gap-8 mb-16 reveal">
-            <div className="lg:w-1/2">
-              <span className="inline-flex items-center gap-2 text-[10.5px] font-bold uppercase tracking-[0.2em] text-[#D4B896] mb-4">
-                <span className="w-5 h-px bg-[#B84A2C]" />Industries
-              </span>
-              <h2 className="font-display font-extrabold text-[2rem] sm:text-[2.3rem] leading-tight text-[#F5F3EE]">
-                Keeping critical<br />sectors turning.
-              </h2>
-            </div>
-            <p className="lg:w-1/2 text-[13.5px] leading-relaxed text-[#F5F3EE]/42 lg:text-right lg:pb-1">
-              From continuous casting steel mills in central India to high-efficiency turbine gearboxes — our parts minimise downtime across essential industries.
-            </p>
-          </div>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {industries.map((ind, i) => (
-              <div key={i}
-                className="reveal stagger group rounded-xl p-6 border border-[#F5F3EE]/6 hover:border-[#D4B896]/30 bg-[#F5F3EE]/3 hover:bg-[#F5F3EE]/6 transition-all duration-300 cursor-default hover:-translate-y-1"
-                style={{ "--delay": `${i * 75}ms` } as React.CSSProperties}>
-                <div className="font-display font-extrabold text-5xl text-[#F5F3EE]/6 mb-4 select-none leading-none">{String(i + 1).padStart(2, "0")}</div>
-                <h3 className="font-display font-bold text-[15px] text-[#F5F3EE] mb-2 group-hover:text-[#D4B896] transition-colors duration-200">{ind.name}</h3>
-                <p className="text-[12.5px] leading-relaxed text-[#F5F3EE]/40">{ind.desc}</p>
               </div>
             ))}
           </div>
@@ -809,18 +640,51 @@ export default function Home() {
 
               <div className="mt-10 grid sm:grid-cols-2 gap-4">
                 {[
-                  { title:"100% Genuine Sourcing", desc:"Brand-audited, traceable certificates on every consignment." },
-                  { title:"Global Reach",           desc:"Expert customs handling and container freight worldwide." },
-                  { title:"Technical Matching",     desc:"Decades of cross-reference engineering databases." },
-                  { title:"Trade Compliance",       desc:"Transparent invoice structures, proper GST filings." },
+                  {
+                    title: "100% Genuine Sourcing",
+                    desc: "Brand-audited, traceable certificates on every consignment.",
+                    icon: (
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="#3D5C45" strokeWidth="2.2" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                      </svg>
+                    )
+                  },
+                  {
+                    title: "Global Reach",
+                    desc: "Expert customs handling and container freight worldwide.",
+                    icon: (
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="#3D5C45" strokeWidth="2" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="9" />
+                        <path strokeLinecap="round" d="M3.6 9h16.8M3.6 15h16.8" />
+                        <path strokeLinecap="round" d="M11.5 3a17 17 0 000 18m1-18a17 17 0 010 18" />
+                      </svg>
+                    )
+                  },
+                  {
+                    title: "Technical Matching",
+                    desc: "Decades of cross-reference engineering databases.",
+                    icon: (
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="#3D5C45" strokeWidth="2" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.43l-1.003.828c-.293.241-.438.613-.43.992a7.723 7.723 0 010 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.43l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 010-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28z" />
+                        <circle cx="12" cy="12" r="3" />
+                      </svg>
+                    )
+                  },
+                  {
+                    title: "Trade Compliance",
+                    desc: "Transparent invoice structures, proper GST filings.",
+                    icon: (
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="#3D5C45" strokeWidth="2" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                      </svg>
+                    )
+                  }
                 ].map((f, i) => (
                   <div key={i}
                     className="reveal stagger flex gap-3 items-start p-4 rounded-xl border border-[#E2DDCF] bg-[#F5F3EE] hover:border-[#3D5C45]/30 transition-colors duration-200"
                     style={{ "--delay": `${i * 80}ms` } as React.CSSProperties}>
                     <div className="mt-0.5 w-5 h-5 rounded-full flex items-center justify-center shrink-0 bg-[#3D5C45]/12">
-                      <svg className="w-3 h-3" fill="none" stroke="#3D5C45" strokeWidth="2.8" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                      </svg>
+                      {f.icon}
                     </div>
                     <div>
                       <div className="font-bold text-[13.5px] text-[#1A1A18] mb-0.5">{f.title}</div>
@@ -834,7 +698,7 @@ export default function Home() {
             <div className="lg:col-span-5 reveal-right">
               {/* About image */}
               <div className="rounded-2xl overflow-hidden mb-4 img-overlay relative h-64 shadow-xl">
-                <Image src="/about_trade.png" alt="Mumbai trade desk" fill className="object-cover" />
+                <Image src="/images/11.jpg" alt="Mumbai trade desk" fill className="object-cover" />
                 <div className="absolute inset-0 z-10 flex items-end p-6">
                   <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#1A1A18]/60 backdrop-blur-sm border border-[#F5F3EE]/10">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#B84A2C]" />
@@ -973,11 +837,11 @@ export default function Home() {
 
             <div className="lg:col-span-5 space-y-3 reveal-right">
               {[
-                { label:"Office",           val:"2nd Floor-1, 12/14 Hira Bhuvan, Dariyasthan Street, Masjid Bunder, Mumbai 400003", href:"https://maps.google.com/?q=Dariyasthan+Street,+Masjid+Bunder,+Mumbai", linkText:"Open in Google Maps →", external:true },
-                { label:"Phone / WhatsApp", val:"+91 98207 17873",     href:"tel:+919820717873",                  linkText:"", external:false },
-                { label:"Email",            val:"info.poweragro@gmail.com", href:"mailto:info.poweragro@gmail.com", linkText:"", external:false },
-                { label:"GSTIN",            val:"27AAZHA9435Q1Z5",     href:"", linkText:"", external:false },
-                { label:"Hours",            val:"Mon – Sat · 10:00 – 18:30 IST", href:"", linkText:"", external:false },
+                { label: "Office", val: "2nd Floor-1, 12/14 Hira Bhuvan, Dariyasthan Street, Masjid Bunder, Mumbai 400003", href: "https://maps.google.com/?q=Dariyasthan+Street,+Masjid+Bunder,+Mumbai", linkText: "Open in Google Maps →", external: true },
+                { label: "Phone / WhatsApp", val: "+91 98207 17873", href: "tel:+919820717873", linkText: "", external: false },
+                { label: "Email", val: "info.poweragro@gmail.com", href: "mailto:info.poweragro@gmail.com", linkText: "", external: false },
+                { label: "GSTIN", val: "27AAZHA9435Q1Z5", href: "", linkText: "", external: false },
+                { label: "Hours", val: "Mon – Sat · 10:00 – 18:30 IST", href: "", linkText: "", external: false },
               ].map((item, i) => (
                 <div key={i} className="flex gap-4 items-start p-5 rounded-xl bg-white border border-[#E2DDCF] hover:border-[#C8BFA8] transition-colors duration-200">
                   <span className="text-[9.5px] font-bold uppercase tracking-[0.18em] text-[#8C5C3E] mt-0.5 w-20 shrink-0">{item.label}</span>
@@ -1027,7 +891,7 @@ export default function Home() {
           <div>
             <h4 className="text-[9.5px] font-bold uppercase tracking-[0.2em] text-[#D4B896]/55 mb-5">Navigation</h4>
             <ul className="space-y-2.5">
-              {[["#products","Product Range"],["#industries","Industries Served"],["#trade","Our Process"],["#about","About Us"],["#contact","Contact & Enquiry"]].map(([href,label]) => (
+              {[["#products", "Product Range"], ["#trade", "Our Process"], ["#about", "About Us"], ["#contact", "Contact & Enquiry"]].map(([href, label]) => (
                 <li key={href}><a href={href} className="text-[12.5px] text-[#F5F3EE]/45 hover:text-[#F5F3EE]/80 transition-colors">{label}</a></li>
               ))}
             </ul>
