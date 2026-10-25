@@ -17,7 +17,10 @@ const plusJakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Power Agro — Bearing Importers & Exporters, Mumbai",
+  title: {
+    default: "Power Agro — Bearing Importers & Exporters, Mumbai",
+    template: "%s — Power Agro",
+  },
   description:
     "Power Agro is a Mumbai-based import & export trade house for genuine agricultural and industrial bearings — FAG, SKF, Timken, NSK, NTN, KOYO, NACHI, Schaeffler.",
   keywords: [

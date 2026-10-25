@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
+import SiteHeader from "./components/SiteHeader";
+import SiteFooter from "./components/SiteFooter";
 
 /* ─── Scroll-reveal hook ─── */
 function useReveal() {
@@ -45,35 +47,9 @@ function CountUp({ target, suffix = "" }: { target: number; suffix?: string }) {
   return <span ref={ref}>{val.toLocaleString()}{suffix}</span>;
 }
 
-/* ─── Logo SVG ─── */
-// Ball positions pre-computed as fixed-precision strings to prevent SSR/client hydration mismatch
-const LOGO_BALLS = [0, 60, 120, 180, 240, 300].map((deg, i) => {
-  const rad = (deg * Math.PI) / 180;
-  return {
-    cx: (20 + 12 * Math.cos(rad)).toFixed(3),
-    cy: (20 + 12 * Math.sin(rad)).toFixed(3),
-    accent: i === 0,
-  };
-});
-
-function LogoMark({ size = 36 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 40 40" fill="none">
-      <circle cx="20" cy="20" r="18" stroke="#3D5C45" strokeWidth="2.5" />
-      <circle cx="20" cy="20" r="12" stroke="#3D5C45" strokeWidth="6" strokeOpacity="0.18" />
-      <circle cx="20" cy="20" r="5.5" stroke="#3D5C45" strokeWidth="2" />
-      {LOGO_BALLS.map((b, i) => (
-        <circle key={i} cx={b.cx} cy={b.cy} r="2.4" fill={b.accent ? "#B84A2C" : "#3D5C45"} />
-      ))}
-    </svg>
-  );
-}
-
 export default function Home() {
   useReveal();
 
-  const currentYear = 2026;
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeCategoryFilter, setActiveCategoryFilter] = useState("all");
   const [name, setName] = useState("");
   const [company, setCompany] = useState("");
@@ -86,13 +62,6 @@ export default function Home() {
   const [searchResult, setSearchResult] = useState<{
     code?: string; type: string; d?: number; D?: number; B?: number; brands: string[]; notFound?: boolean;
   } | null>(null);
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const fn = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", fn, { passive: true });
-    return () => window.removeEventListener("scroll", fn);
-  }, []);
 
   const bearingDb: Record<string, { type: string; d: number; D: number; B: number; brands: string[] }> = {
     "6204": { type: "Deep Groove Ball Bearing", d: 20, D: 47, B: 14, brands: ["SKF", "FAG", "NSK", "NTN"] },
@@ -149,83 +118,10 @@ export default function Home() {
     setFormError(""); setFormSubmitted(true);
   };
 
-  const navLinks: [string, string][] = [["#products", "Products"], ["#trade", "Process"], ["#about", "About"], ["#contact", "Contact"]];
-
   return (
     <main className="min-h-screen font-sans overflow-x-hidden bg-[#F5F3EE] text-[#1A1A18]">
 
-      {/* ══ NAVBAR ══ */}
-      <header
-        className={`sticky top-0 z-50 border-b border-[#E2DDCF] transition-all duration-300 ${scrolled ? "shadow-md shadow-[#1A1A18]/5" : ""}`}
-        style={{ background: "rgba(245,243,238,0.95)", backdropFilter: "blur(20px)" }}
-      >
-        <div className="mx-auto max-w-6xl px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <a href="#top" className="flex items-center gap-3 group shrink-0">
-              <div className="transition-transform duration-700 group-hover:rotate-[30deg]">
-                <LogoMark size={36} />
-              </div>
-              <div className="flex flex-col leading-none gap-0.5">
-                <span className="font-display font-extrabold text-[15px] tracking-tight text-[#1A1A18]">
-                  Power<span className="text-[#B84A2C]">Agro</span>
-                </span>
-                <span className="text-[9.5px] font-semibold uppercase tracking-[0.2em] text-[#8C5C3E]">
-                  Mumbai · Est.&nbsp;1980
-                </span>
-              </div>
-            </a>
-
-            <nav className="hidden md:flex items-center gap-6 text-[13.5px] font-medium text-[#3D3C38]">
-              {navLinks.map(([href, label]) => (
-                <a key={href} href={href}
-                  className="relative py-1 hover:text-[#1A1A18] transition-colors duration-150
-                             after:absolute after:bottom-0 after:left-0 after:h-[1.5px] after:w-0
-                             after:bg-[#B84A2C] after:transition-all after:duration-250 hover:after:w-full">
-                  {label}
-                </a>
-              ))}
-            </nav>
-
-            <div className="hidden md:flex items-center gap-4">
-              <a href="tel:+919820717873" className="flex items-center gap-1.5 text-[12.5px] font-semibold text-[#3D5C45] hover:text-[#3D5C45]/70 transition-colors">
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l.74 2.22a1 1 0 01-.23 1.02L8.44 8.22a10 10 0 004.34 4.34l1.3-1.3a1 1 0 011.02-.23l2.22.74A1 1 0 0118 12.72V16a2 2 0 01-2 2h-1C9.71 18 3 11.29 3 5z" />
-                </svg>
-                +91 98207 17873
-              </a>
-              <a href="#contact"
-                className="inline-flex items-center gap-1.5 rounded-lg bg-[#B84A2C] hover:bg-[#A03F26] text-[#F5F3EE] px-4 py-2 text-[12.5px] font-bold tracking-wide transition-all duration-200 hover:-translate-y-px hover:shadow-lg hover:shadow-[#B84A2C]/30 pulse-glow">
-                Get a Quote →
-              </a>
-            </div>
-
-            <button className="md:hidden p-2 rounded-lg bg-[#EAE7E0]"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)} aria-label="Menu">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                {mobileMenuOpen
-                  ? <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  : <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />}
-              </svg>
-            </button>
-          </div>
-        </div>
-        {mobileMenuOpen && (
-          <div className="md:hidden border-t border-[#E2DDCF] bg-[#F5F3EE] animate-fade-in">
-            <div className="mx-auto max-w-6xl px-6 py-5 flex flex-col gap-1">
-              {navLinks.map(([href, label]) => (
-                <a key={href} href={href} onClick={() => setMobileMenuOpen(false)}
-                  className="px-3 py-3 rounded-lg text-sm font-medium text-[#3D3C38] hover:bg-[#EAE7E0] transition-colors">
-                  {label}
-                </a>
-              ))}
-              <a href="#contact" onClick={() => setMobileMenuOpen(false)}
-                className="mt-2 px-3 py-3 rounded-lg text-sm font-bold text-center bg-[#B84A2C] text-[#F5F3EE]">
-                Get a Quote
-              </a>
-            </div>
-          </div>
-        )}
-      </header>
+      <SiteHeader />
 
       {/* ══ HERO ══ */}
       <section id="top" className="relative overflow-hidden bg-[#111210] text-[#F5F3EE]" style={{ minHeight: "92vh" }}>
@@ -246,9 +142,9 @@ export default function Home() {
         <div className="relative z-10 mx-auto max-w-6xl px-6 lg:px-8 pt-28 pb-24 md:pt-36 md:pb-32">
           <div className="max-w-2xl">
             {/* Eyebrow */}
-            <div className="inline-flex items-center gap-2 mb-8 px-3 py-1.5 rounded-full border border-[#D4B896]/20 bg-[#D4B896]/8 animate-fade-in">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#B84A2C] animate-pulse" />
-              <span className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#D4B896]/75">
+            <div className="inline-flex items-center gap-3 mb-8 animate-fade-in">
+              <span className="w-8 h-px bg-[#B84A2C]" />
+              <span className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#D4B896]/80">
                 Mumbai · Import &amp; Export · Since 1980
               </span>
             </div>
@@ -257,7 +153,7 @@ export default function Home() {
               style={{ fontSize: "clamp(2.6rem, 5.5vw, 4.8rem)" }}>
               The bearings that<br />
               keep{" "}
-              <span className="shimmer-text">India's industry</span>
+              <span className="text-[#D4B896]">India&apos;s industry</span>
               <br />turning.
             </h1>
 
@@ -268,14 +164,14 @@ export default function Home() {
 
             <div className="mt-10 flex flex-wrap gap-3 animate-fade-in" style={{ animationDelay: "0.35s" }}>
               <a href="#products"
-                className="inline-flex items-center gap-2 rounded-xl bg-[#B84A2C] hover:bg-[#A03F26] text-[#F5F3EE] px-7 py-3.5 text-sm font-bold tracking-wide transition-all duration-200 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#B84A2C]/35">
+                className="inline-flex items-center gap-2 bg-[#B84A2C] hover:bg-[#A03F26] text-[#F5F3EE] px-7 py-3.5 text-sm font-bold tracking-wide transition-all duration-200">
                 Browse Our Range
-                <svg className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="square" d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>
               </a>
               <a href="#contact"
-                className="inline-flex items-center gap-2 rounded-xl border border-[#F5F3EE]/18 hover:border-[#F5F3EE]/35 bg-[#F5F3EE]/5 hover:bg-[#F5F3EE]/10 text-[#F5F3EE] px-7 py-3.5 text-sm font-semibold transition-all duration-200 hover:-translate-y-1">
+                className="inline-flex items-center gap-2 border border-[#F5F3EE]/25 hover:border-[#F5F3EE]/60 text-[#F5F3EE] px-7 py-3.5 text-sm font-semibold transition-all duration-200">
                 Talk to our desk
               </a>
             </div>
@@ -302,12 +198,6 @@ export default function Home() {
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 float animate-fade-in" style={{ animationDelay: "1s" }}>
-          <span className="text-[9.5px] font-bold uppercase tracking-[0.22em] text-[#F5F3EE]/30">Scroll</span>
-          <div className="w-px h-10 bg-gradient-to-b from-[#F5F3EE]/25 to-transparent" />
         </div>
       </section>
 
@@ -360,13 +250,13 @@ export default function Home() {
                   Cross-reference any bearing code
                 </h2>
                 <p className="mt-3 text-[14px] leading-relaxed text-[#3D3C38]">
-                  Type a standard designation and we'll show you exact dimensions and the brands we stock it under.
+                  Type a standard designation and we&apos;ll show you exact dimensions and the brands we stock it under.
                 </p>
                 <div className="mt-5 flex flex-wrap items-center gap-2">
                   <span className="text-[11px] font-semibold text-[#8C5C3E] mr-1">Try:</span>
                   {["6204", "22220", "30204", "UC205"].map(ex => (
                     <button key={ex} onClick={() => handleSearch(ex)}
-                      className="px-3 py-1.5 rounded-lg border border-[#3D5C45]/30 bg-[#3D5C45]/6 text-[#3D5C45] text-[11.5px] font-bold hover:bg-[#3D5C45]/14 transition-all duration-200 hover:-translate-y-0.5 cursor-pointer">
+                      className="px-3 py-1.5 border border-[#3D5C45]/30 bg-[#3D5C45]/6 text-[#3D5C45] text-[11.5px] font-bold hover:bg-[#3D5C45]/14 transition-all duration-200 cursor-pointer">
                       {ex}
                     </button>
                   ))}
@@ -374,7 +264,7 @@ export default function Home() {
               </div>
 
               {/* Dynamic Blueprint Graphic */}
-              <div className="mt-8 p-6 rounded-2xl border border-[#E2DDCF] bg-white flex flex-col items-center justify-center relative min-h-[220px] flex-grow">
+              <div className="mt-8 p-6 border border-[#E2DDCF] bg-white flex flex-col items-center justify-center relative min-h-[220px] flex-grow">
                 <span className="absolute top-4 left-4 text-[9px] font-bold uppercase tracking-wider text-[#8C5C3E]">Blueprint Schematic</span>
 
                 {/* Schematic SVG */}
@@ -417,7 +307,7 @@ export default function Home() {
 
             {/* Right Column: Search Card Widget */}
             <div className="reveal-right flex flex-col justify-between">
-              <div className="rounded-2xl overflow-hidden border border-[#2A2A28] bg-[#161714] h-full flex flex-col justify-between">
+              <div className="overflow-hidden border border-[#2A2A28] bg-[#161714] h-full flex flex-col justify-between">
                 <div className="p-7 pb-6">
                   <label className="block text-[10.5px] font-bold uppercase tracking-[0.18em] text-[#D4B896]/65 mb-3">
                     Bearing designation
@@ -425,7 +315,7 @@ export default function Home() {
                   <div className="relative">
                     <input type="text" value={searchQuery} onChange={e => handleSearch(e.target.value)}
                       placeholder="e.g. 6204, 22220, UC205 …"
-                      className="w-full rounded-xl px-5 py-4 text-[13.5px] font-mono bg-[#1E1F1C] border border-[#2E2E2C] text-[#F5F3EE] placeholder-[#F5F3EE]/25 focus:outline-none focus:border-[#D4B896]/40 transition-all duration-200" />
+                      className="w-full px-5 py-4 text-[13.5px] font-mono bg-[#1E1F1C] border border-[#2E2E2C] text-[#F5F3EE] placeholder-[#F5F3EE]/25 focus:outline-none focus:border-[#D4B896]/40 transition-all duration-200" />
                     {searchQuery && (
                       <button onClick={() => handleSearch("")}
                         className="absolute right-4 top-1/2 -translate-y-1/2 text-[11px] font-semibold text-[#F5F3EE]/35 hover:text-[#F5F3EE]/60 transition-colors cursor-pointer">
@@ -437,11 +327,11 @@ export default function Home() {
 
                 <div className="flex-grow px-7 pb-7 flex flex-col justify-end">
                   {searchResult ? (
-                    <div className="rounded-xl p-5 border border-[#3D5C45]/35 bg-[#3D5C45]/12 animate-fade-in">
+                    <div className="p-5 border border-[#3D5C45]/35 bg-[#3D5C45]/12 animate-fade-in">
                       {searchResult.notFound ? (
                         <>
                           <div className="flex items-center gap-2 mb-2">
-                            <span className="w-2 h-2 rounded-full bg-[#D4B896]" />
+                            <span className="w-2 h-2 bg-[#D4B896]" />
                             <span className="text-[11px] font-bold uppercase tracking-wider text-[#D4B896]">Custom sourcing required</span>
                           </div>
                           <p className="text-[12px] text-[#F5F3EE]/55 leading-relaxed mb-4">
@@ -453,10 +343,10 @@ export default function Home() {
                         <>
                           <div className="flex items-center justify-between mb-4">
                             <div className="flex items-center gap-2">
-                              <span className="w-2 h-2 rounded-full bg-[#7AA685] animate-pulse" />
+                              <span className="w-2 h-2 bg-[#7AA685]" />
                               <span className="text-[11px] font-bold uppercase tracking-wider text-[#7AA685]">Match — SKU {searchResult.code}</span>
                             </div>
-                            <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-[#7AA685]/18 text-[#7AA685]">In Stock</span>
+                            <span className="text-[10px] font-bold px-2 py-0.5 bg-[#7AA685]/18 text-[#7AA685]">In Stock</span>
                           </div>
                           <div className="grid grid-cols-2 gap-5 text-[12.5px]">
                             <div className="space-y-3">
@@ -487,7 +377,7 @@ export default function Home() {
                       )}
                     </div>
                   ) : (
-                    <div className="rounded-xl p-8 border border-dashed border-[#F5F3EE]/10 bg-transparent flex flex-col items-center justify-center text-center opacity-40">
+                    <div className="p-8 border border-dashed border-[#F5F3EE]/10 bg-transparent flex flex-col items-center justify-center text-center opacity-40">
                       <svg className="w-8 h-8 text-[#F5F3EE] mb-3" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.637 10.637z" />
                       </svg>
@@ -529,7 +419,7 @@ export default function Home() {
               { id: "special", label: "Specialty" },
             ].map(tab => (
               <button key={tab.id} onClick={() => setActiveCategoryFilter(tab.id)}
-                className="px-4 py-2 rounded-lg text-[12px] font-bold tracking-wide border cursor-pointer transition-all duration-200 hover:-translate-y-0.5"
+                className="px-4 py-2 text-[12px] font-bold tracking-wide border cursor-pointer transition-all duration-200"
                 style={{
                   background: activeCategoryFilter === tab.id ? "#1A1A18" : "transparent",
                   color: activeCategoryFilter === tab.id ? "#F5F3EE" : "#3D3C38",
@@ -543,14 +433,14 @@ export default function Home() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
             {filteredProducts.map((product, i) => (
               <div key={product.id}
-                className="reveal stagger group rounded-2xl border border-[#E2DDCF] bg-white hover:border-[#B84A2C]/28 hover:-translate-y-2 hover:shadow-2xl hover:shadow-[#1A1A18]/8 transition-all duration-350 flex flex-col overflow-hidden"
+                className="reveal stagger group border border-[#E2DDCF] bg-white hover:border-[#B84A2C]/28 transition-all duration-350 flex flex-col overflow-hidden"
                 style={{ "--delay": `${i * 80}ms` } as React.CSSProperties}>
                 {/* Product image */}
                 <div className="relative h-44 overflow-hidden">
                   <Image src={product.img} alt={product.title} fill className="object-cover transition-transform duration-500 group-hover:scale-105" />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A18]/60 to-transparent" />
                   <span className="absolute top-4 right-4 font-display font-extrabold text-2xl text-white/20 leading-none">{product.id}</span>
-                  <span className="absolute bottom-4 left-4 text-[10px] font-bold px-2.5 py-1 rounded-full bg-[#F5F3EE]/15 backdrop-blur-sm text-[#F5F3EE] uppercase tracking-wider border border-[#F5F3EE]/20">
+                  <span className="absolute bottom-4 left-4 text-[10px] font-bold px-2.5 py-1 bg-[#F5F3EE]/15 text-[#F5F3EE] uppercase tracking-wider border border-[#F5F3EE]/20">
                     {product.group}
                   </span>
                 </div>
@@ -562,7 +452,7 @@ export default function Home() {
                   <p className="text-[13px] leading-relaxed text-[#3D3C38] flex-1">{product.desc}</p>
 
                   {/* Specs */}
-                  <div className="mt-5 rounded-xl p-4 bg-[#F5F3EE] border border-[#E2DDCF]">
+                  <div className="mt-5 p-4 bg-[#F5F3EE] border border-[#E2DDCF]">
                     <div className="grid grid-cols-3 gap-3 text-center">
                       {[["Bore", product.specs.bore], ["Speed", product.specs.speed], ["Grade", product.specs.prec]].map(([k, v]) => (
                         <div key={k as string}>
@@ -607,7 +497,7 @@ export default function Home() {
                 className="reveal stagger relative z-10"
                 style={{ "--delay": `${i * 100}ms` } as React.CSSProperties}>
                 <div className="flex items-center gap-3 mb-5">
-                  <div className="w-11 h-11 rounded-full border-2 border-[#1A1A18] bg-[#F5F3EE] flex items-center justify-center font-display font-extrabold text-[13px] text-[#1A1A18] shrink-0 transition-all duration-300 hover:bg-[#1A1A18] hover:text-[#F5F3EE]">
+                  <div className="w-11 h-11 border border-[#1A1A18] bg-[#F5F3EE] flex items-center justify-center font-display font-extrabold text-[13px] text-[#1A1A18] shrink-0 transition-all duration-300 hover:bg-[#1A1A18] hover:text-[#F5F3EE]">
                     {step.num}
                   </div>
                   {i < 3 && <div className="h-px flex-1 bg-[#E2DDCF] lg:hidden" />}
@@ -681,9 +571,9 @@ export default function Home() {
                   }
                 ].map((f, i) => (
                   <div key={i}
-                    className="reveal stagger flex gap-3 items-start p-4 rounded-xl border border-[#E2DDCF] bg-[#F5F3EE] hover:border-[#3D5C45]/30 transition-colors duration-200"
+                    className="reveal stagger flex gap-3 items-start p-4 border border-[#E2DDCF] bg-[#F5F3EE] hover:border-[#3D5C45]/30 transition-colors duration-200"
                     style={{ "--delay": `${i * 80}ms` } as React.CSSProperties}>
-                    <div className="mt-0.5 w-5 h-5 rounded-full flex items-center justify-center shrink-0 bg-[#3D5C45]/12">
+                    <div className="mt-0.5 w-5 h-5 flex items-center justify-center shrink-0 bg-[#3D5C45]/12">
                       {f.icon}
                     </div>
                     <div>
@@ -697,18 +587,18 @@ export default function Home() {
 
             <div className="lg:col-span-5 reveal-right">
               {/* About image */}
-              <div className="rounded-2xl overflow-hidden mb-4 img-overlay relative h-64 shadow-xl">
+              <div className="overflow-hidden mb-4 img-overlay relative h-64">
                 <Image src="/images/11.jpg" alt="Mumbai trade desk" fill className="object-cover" />
                 <div className="absolute inset-0 z-10 flex items-end p-6">
-                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#1A1A18]/60 backdrop-blur-sm border border-[#F5F3EE]/10">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#B84A2C]" />
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#1A1A18]/60 border border-[#F5F3EE]/10">
+                    <span className="w-1.5 h-1.5 bg-[#B84A2C]" />
                     <span className="text-[11px] font-bold text-[#F5F3EE] uppercase tracking-wider">Mumbai · Est. 1980</span>
                   </div>
                 </div>
               </div>
 
               {/* Globe card */}
-              <div className="rounded-2xl overflow-hidden border border-[#E2DDCF] shadow-sm">
+              <div className="overflow-hidden border border-[#E2DDCF] shadow-sm">
                 <div className="bg-[#111210] relative">
                   <svg className="w-full" viewBox="0 0 400 220" fill="none">
                     <rect width="400" height="220" fill="#111210" />
@@ -740,7 +630,7 @@ export default function Home() {
                 </div>
                 <div className="p-5 bg-[#F5F3EE]">
                   <div className="flex items-center gap-2 mb-1.5">
-                    <span className="w-2 h-2 rounded-full bg-[#B84A2C] animate-pulse" />
+                    <span className="w-2 h-2 bg-[#B84A2C]" />
                     <span className="font-bold text-[13.5px] text-[#1A1A18]">Mumbai Trade Desk</span>
                   </div>
                   <p className="text-[12px] text-[#8C5C3E] leading-relaxed">
@@ -766,54 +656,53 @@ export default function Home() {
           </div>
 
           <div className="grid lg:grid-cols-12 gap-8 items-start">
-            <div className="lg:col-span-7 rounded-2xl bg-white border border-[#E2DDCF] shadow-sm overflow-hidden reveal-left">
-              <div className="h-1 bg-gradient-to-r from-[#B84A2C] via-[#D4B896] to-[#3D5C45]" />
+            <div className="lg:col-span-7 bg-white border border-[#E2DDCF] shadow-sm overflow-hidden reveal-left">
               <div className="p-8 sm:p-10">
                 <h3 className="font-display font-extrabold text-[18px] text-[#1A1A18] mb-1">Send a sourcing request</h3>
                 <p className="text-[13px] text-[#8C5C3E] mb-8">Part numbers, quantities, target brands — share what you need.</p>
 
                 {formSubmitted ? (
                   <div className="py-12 text-center animate-fade-in">
-                    <div className="w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-5 bg-[#3D5C45]/10">
+                    <div className="w-16 h-16 mx-auto flex items-center justify-center mb-5 bg-[#3D5C45]/10">
                       <svg className="w-7 h-7" fill="none" stroke="#3D5C45" strokeWidth="2.5" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                       </svg>
                     </div>
                     <h4 className="font-display font-bold text-[17px] text-[#1A1A18] mb-2">Request sent!</h4>
                     <p className="text-[13px] text-[#3D3C38] max-w-xs mx-auto mb-7 leading-relaxed">
-                      We'll cross-reference your request and reply within 4 business hours to <strong>{email}</strong>.
+                      We&apos;ll cross-reference your request and reply within 4 business hours to <strong>{email}</strong>.
                     </p>
                     <button onClick={() => { setFormSubmitted(false); setName(""); setCompany(""); setEmail(""); setMessage(""); }}
-                      className="px-5 py-2.5 rounded-lg text-[12.5px] font-bold border border-[#E2DDCF] text-[#1A1A18] hover:bg-[#F5F3EE] transition-colors cursor-pointer">
+                      className="px-5 py-2.5 text-[12.5px] font-bold border border-[#E2DDCF] text-[#1A1A18] hover:bg-[#F5F3EE] transition-colors cursor-pointer">
                       Submit another request
                     </button>
                   </div>
                 ) : (
                   <form onSubmit={handleFormSubmit} className="space-y-5">
                     {formError && (
-                      <div className="px-4 py-3 rounded-xl text-[12.5px] font-semibold bg-[#B84A2C]/8 text-[#B84A2C] border border-[#B84A2C]/20">{formError}</div>
+                      <div className="px-4 py-3 text-[12.5px] font-semibold bg-[#B84A2C]/8 text-[#B84A2C] border border-[#B84A2C]/20">{formError}</div>
                     )}
                     <div className="grid sm:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-[11px] font-bold uppercase tracking-wider text-[#3D3C38] mb-1.5">Name *</label>
                         <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Your name" required
-                          className="w-full rounded-xl px-4 py-3 text-[13.5px] bg-[#F5F3EE] border border-[#E2DDCF] text-[#1A1A18] placeholder-[#1A1A18]/28 focus:outline-none focus:border-[#B84A2C]/40 transition-all duration-200" />
+                          className="w-full px-4 py-3 text-[13.5px] bg-[#F5F3EE] border border-[#E2DDCF] text-[#1A1A18] placeholder-[#1A1A18]/28 focus:outline-none focus:border-[#B84A2C]/40 transition-all duration-200" />
                       </div>
                       <div>
                         <label className="block text-[11px] font-bold uppercase tracking-wider text-[#3D3C38] mb-1.5">Company</label>
                         <input type="text" value={company} onChange={e => setCompany(e.target.value)} placeholder="Company name"
-                          className="w-full rounded-xl px-4 py-3 text-[13.5px] bg-[#F5F3EE] border border-[#E2DDCF] text-[#1A1A18] placeholder-[#1A1A18]/28 focus:outline-none focus:border-[#B84A2C]/40 transition-all duration-200" />
+                          className="w-full px-4 py-3 text-[13.5px] bg-[#F5F3EE] border border-[#E2DDCF] text-[#1A1A18] placeholder-[#1A1A18]/28 focus:outline-none focus:border-[#B84A2C]/40 transition-all duration-200" />
                       </div>
                     </div>
                     <div>
                       <label className="block text-[11px] font-bold uppercase tracking-wider text-[#3D3C38] mb-1.5">Email *</label>
                       <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="name@company.com" required
-                        className="w-full rounded-xl px-4 py-3 text-[13.5px] bg-[#F5F3EE] border border-[#E2DDCF] text-[#1A1A18] placeholder-[#1A1A18]/28 focus:outline-none focus:border-[#B84A2C]/40 transition-all duration-200" />
+                        className="w-full px-4 py-3 text-[13.5px] bg-[#F5F3EE] border border-[#E2DDCF] text-[#1A1A18] placeholder-[#1A1A18]/28 focus:outline-none focus:border-[#B84A2C]/40 transition-all duration-200" />
                     </div>
                     <div>
                       <label className="block text-[11px] font-bold uppercase tracking-wider text-[#3D3C38] mb-1.5">Category</label>
                       <select value={enquiryType} onChange={e => setEnquiryType(e.target.value)}
-                        className="w-full rounded-xl px-4 py-3 text-[13.5px] bg-[#F5F3EE] border border-[#E2DDCF] text-[#1A1A18] focus:outline-none focus:border-[#B84A2C]/40 transition-all duration-200 cursor-pointer">
+                        className="w-full px-4 py-3 text-[13.5px] bg-[#F5F3EE] border border-[#E2DDCF] text-[#1A1A18] focus:outline-none focus:border-[#B84A2C]/40 transition-all duration-200 cursor-pointer">
                         <option>Product enquiry / quote</option>
                         <option>Bulk / export order</option>
                         <option>Distributor partnership</option>
@@ -824,10 +713,10 @@ export default function Home() {
                       <label className="block text-[11px] font-bold uppercase tracking-wider text-[#3D3C38] mb-1.5">Bearing details &amp; message *</label>
                       <textarea value={message} onChange={e => setMessage(e.target.value)} rows={4} required
                         placeholder="e.g. SKF 6204-2RSH (Qty: 250), FAG 22220-E1-K (Qty: 50)"
-                        className="w-full rounded-xl px-4 py-3 text-[13.5px] bg-[#F5F3EE] border border-[#E2DDCF] text-[#1A1A18] placeholder-[#1A1A18]/28 focus:outline-none focus:border-[#B84A2C]/40 transition-all duration-200 resize-none" />
+                        className="w-full px-4 py-3 text-[13.5px] bg-[#F5F3EE] border border-[#E2DDCF] text-[#1A1A18] placeholder-[#1A1A18]/28 focus:outline-none focus:border-[#B84A2C]/40 transition-all duration-200 resize-none" />
                     </div>
                     <button type="submit"
-                      className="w-full py-4 rounded-xl bg-[#1A1A18] hover:bg-[#2A2A28] text-[#F5F3EE] text-[13.5px] font-bold tracking-wide transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-[#1A1A18]/25 cursor-pointer">
+                      className="w-full py-4 bg-[#1A1A18] hover:bg-[#2A2A28] text-[#F5F3EE] text-[13.5px] font-bold tracking-wide transition-all duration-200 cursor-pointer">
                       Send Sourcing Request →
                     </button>
                   </form>
@@ -843,7 +732,7 @@ export default function Home() {
                 { label: "GSTIN", val: "27AAZHA9435Q1Z5", href: "", linkText: "", external: false },
                 { label: "Hours", val: "Mon – Sat · 10:00 – 18:30 IST", href: "", linkText: "", external: false },
               ].map((item, i) => (
-                <div key={i} className="flex gap-4 items-start p-5 rounded-xl bg-white border border-[#E2DDCF] hover:border-[#C8BFA8] transition-colors duration-200">
+                <div key={i} className="flex gap-4 items-start p-5 bg-white border border-[#E2DDCF] hover:border-[#C8BFA8] transition-colors duration-200">
                   <span className="text-[9.5px] font-bold uppercase tracking-[0.18em] text-[#8C5C3E] mt-0.5 w-20 shrink-0">{item.label}</span>
                   <div>
                     {item.href ? (
@@ -860,7 +749,7 @@ export default function Home() {
                 </div>
               ))}
               <a href="https://wa.me/919820717873" target="_blank" rel="noopener noreferrer"
-                className="flex items-center gap-4 p-5 rounded-xl bg-[#25D366] hover:bg-[#22C55E] text-white transition-all duration-200 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#25D366]/35">
+                className="flex items-center gap-4 p-5 bg-[#25D366] hover:bg-[#22C55E] text-white transition-all duration-200">
                 <svg className="w-6 h-6 shrink-0" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
                 </svg>
@@ -874,42 +763,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ══ FOOTER ══ */}
-      <footer className="bg-[#111210] border-t border-[#2A2A28]">
-        <div className="mx-auto max-w-6xl px-6 lg:px-8 py-14 grid md:grid-cols-3 gap-10">
-          <div>
-            <a href="#top" className="flex items-center gap-2.5 mb-5">
-              <LogoMark size={32} />
-              <span className="font-display font-extrabold text-[14px] text-[#F5F3EE]">
-                Power<span className="text-[#D4B896]">Agro</span>
-              </span>
-            </a>
-            <p className="text-[12.5px] leading-relaxed text-[#F5F3EE]/38">
-              Mumbai-based import &amp; export house for 100% genuine industrial and agricultural bearings. Serving buyers across India and internationally since 1980.
-            </p>
-          </div>
-          <div>
-            <h4 className="text-[9.5px] font-bold uppercase tracking-[0.2em] text-[#D4B896]/55 mb-5">Navigation</h4>
-            <ul className="space-y-2.5">
-              {[["#products", "Product Range"], ["#trade", "Our Process"], ["#about", "About Us"], ["#contact", "Contact & Enquiry"]].map(([href, label]) => (
-                <li key={href}><a href={href} className="text-[12.5px] text-[#F5F3EE]/45 hover:text-[#F5F3EE]/80 transition-colors">{label}</a></li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <h4 className="text-[9.5px] font-bold uppercase tracking-[0.2em] text-[#D4B896]/55 mb-5">Brands Supplied</h4>
-            <p className="text-[12.5px] text-[#F5F3EE]/45 leading-relaxed mb-5">FAG · INA · Schaeffler · SKF · Timken · NSK · NTN · KOYO · NACHI</p>
-            <a href="mailto:info.poweragro@gmail.com" className="block text-[12.5px] font-bold text-[#D4B896] hover:underline mb-1">info.poweragro@gmail.com</a>
-            <a href="tel:+919820717873" className="block text-[12.5px] text-[#F5F3EE]/45 hover:text-[#F5F3EE]/70 transition-colors">+91 98207 17873</a>
-          </div>
-        </div>
-        <div className="border-t border-[#2A2A28] mx-6">
-          <div className="mx-auto max-w-6xl py-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-[10.5px] text-[#F5F3EE]/22">
-            <span>© {currentYear} Power Agro. All rights reserved.</span>
-            <span>GSTIN: 27AAZHA9435Q1Z5 · Masjid Bunder, Mumbai 400003</span>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
     </main>
   );
 }
